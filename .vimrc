@@ -11,15 +11,23 @@ set clipboard=unnamedplus
 set clipboard^=unnamed
 set mouse=r
 set backspace=indent,eol,start
-set laststatus=2
-autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
-autocmd FileType eruby setlocal expandtab shiftwidth=2 tabstop=2
-autocmd FileType javascript setlocal expandtab shiftwidth=2 tabstop=2
+" set laststatus=2
+" set tabstop=2
+" set shiftwidth=2
+" set expandtab
+set expandtab tabstop=2 shiftwidth=2 softtabstop=2
+" autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
+" autocmd FileType eruby setlocal expandtab shiftwidth=2 tabstop=2
+" autocmd FileType javascript setlocal expandtab shiftwidth=2 tabstop=2
+" autocmd FileType jsx setlocal expandtab shiftwidth=2 tabstop=2
 "Netrw show file as a mapping
 map <Leader>f :let @/=expand("%:t") <Bar> execute 'Explore' expand("%:h") <Bar> normal n<CR>
 " :h g:incsearch#auto_nohlsearch
 set hlsearch
+let g:netrw_winsize = 25
 let g:incsearch#auto_nohlsearch = 1
+let g:airline#extensions#tabline#enabled = 1
+autocmd FileType gitcommit noremap <buffer> dt :GdiffInTab<CR>
 map n  <Plug>(incsearch-nohl-n)
 map N  <Plug>(incsearch-nohl-N)
 map *  <Plug>(incsearch-nohl-*)
@@ -32,9 +40,9 @@ set sts=2
 set et     "expand tabs to spaces
 "Mode Settings
 
-let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SI.="\e[1 q" "SI = INSERT mode
 let &t_SR.="\e[4 q" "SR = REPLACE mode
-let &t_EI.="\e[5 q" "EI = NORMAL mode (ELSE)
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 
 "Cursor settings:
 
@@ -59,10 +67,10 @@ autocmd BufWritePre * %s/\s\+$//e
 " move lines
 nnoremap ˚ :m .-2<CR>==
 nnoremap ∆ :m .+1<CR>==
-inoremap  ˚ <Esc>:m .-2<CR>==gi
-inoremap  ∆ <Esc>:m .+1<CR>==gi
-vnoremap  ˚ :m '<-2<CR>gv=gv
-vnoremap  ∆ :m '>+1<CR>gv=gv
+inoremap ˚ <Esc>:m .-2<CR>==gi
+inoremap ∆ <Esc>:m .+1<CR>==gi
+vnoremap ˚ :m '<-2<CR>gv=gv
+vnoremap ∆ :m '>+1<CR>gv=gv
 
 " remap splitting windows
 nnoremap <C-h> <C-w>h
@@ -70,9 +78,15 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 " remap splits
-nmap :vs :vsplit
-nmap :s :split
 " nnoremap <C-a> <C-w>
+nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
 "Pathogen
 set nocp
 call pathogen#infect()
@@ -110,8 +124,8 @@ Plugin 'geoffharcourt/vim-ruby-private-method-extract'
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+" Plugin 'vim-airline/vim-airline'
+" Plugin 'vim-airline/vim-airline-themes'
 Plugin 'dyng/ctrlsf.vim'
 Plugin 'rizzatti/dash.vim'
 Plugin 'skywind3000/vim-preview'
@@ -119,6 +133,8 @@ Plugin 'dracula/vim', { 'name': 'dracula' }
 Plugin 'haya14busa/incsearch.vim'
 " plugin on GitHub repo
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
 " Scala highlights
 Plugin 'prettier/vim-prettier'
 " Plugin 'derekwyatt/vim-scala'
@@ -149,7 +165,9 @@ nnoremap <silent> <C-x> :Buffers<CR>
 
 " Ripgrep
 Plugin 'jremmen/vim-ripgrep'
-let g:rg_highligh = 1
+let g:rg_highlight = 1
+
+Plugin 'townk/vim-autoclose'
 
 "" Quick comment toggling
 Plugin 'tpope/vim-commentary'
@@ -166,6 +184,7 @@ autocmd FileType ruby setlocal commentstring=#\ %s
 
 map <S-d> :tabnext<CR>
 map <S-w> :tabnew<CR>
+map <S-s> :tabpr<CR>
 
 Plugin 'craigemery/vim-autotag'
 Plugin 'slim-template/vim-slim.git'
@@ -173,6 +192,7 @@ Plugin 'slim-template/vim-slim.git'
 Plugin 'sheerun/vim-polyglot'
 " Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'alvan/vim-closetag'     "Auto close (X)HTML tags
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx'
 
 call vundle#end()            " required
 
@@ -211,24 +231,31 @@ Plugin 'w0rp/ale'
 let g:ale_lint_on_text_changed = 1
 let g:ale_lint_on_save = 1
 let g:ale_set_loclist = 1
-
+let g:ale_linters_explicit = 1
+" let g:ale_javascript_xo_options = "--plug=react --prettier"
+" let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
+let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 let g:ale_fixers = {
 \  'ruby': [
 \    'remove_trailing_lines',
 \    'trim_whitespace',
 \    'rubocop'
-\  ]
+\  ],
+\  'javascript': ['prettier'],
+\  'jsx': ['stylelint', 'eslint'],
+\  'css': ['prettier'],
 \}
-let g:ale_fixers = {'javascript': ['prettier']}
-let g:ale_linters = {'python': ['pycodestyle']}
-let g:ale_linters = {'ruby': ['rubocop', 'ruby']}
+let g:ale_linters = {
+\    'python': ['pycodestyle'],
+\    'ruby': ['rubocop'],
+\    'jsx': ['stylelint', 'eslint'],
+\    'javascript': ['eslint'],
+\}
 let g:ale_ruby_rubocop_executable = 'bin/rubocop'
-let g:ruby_indent_assignment_style = 'variable'
-
 " vim-ruby
 let g:ruby_indent_access_modifier_style = 'normal'
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
 let g:netrw_hide = 0
 set shell=/usr/local/bin/bash
-
+" source ~/.vim/plugins/cscope_maps.vim
