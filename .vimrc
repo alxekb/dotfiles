@@ -11,6 +11,8 @@ set clipboard=unnamedplus
 set clipboard^=unnamed
 set mouse=r
 set backspace=indent,eol,start
+set foldmethod=syntax
+hi Folded ctermbg=NONE ctermfg=Black
 " set laststatus=2
 " set tabstop=2
 " set shiftwidth=2
@@ -24,7 +26,7 @@ set expandtab tabstop=2 shiftwidth=2 softtabstop=2
 map <Leader>f :let @/=expand("%:t") <Bar> execute 'Explore' expand("%:h") <Bar> normal n<CR>
 " :h g:incsearch#auto_nohlsearch
 set hlsearch
-let g:netrw_winsize = 25
+let g:netrw_winsize = 28
 let g:incsearch#auto_nohlsearch = 1
 let g:airline#extensions#tabline#enabled = 1
 autocmd FileType gitcommit noremap <buffer> dt :GdiffInTab<CR>
@@ -54,7 +56,9 @@ let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 "  6 -> solid vertical bar
 " max text length
 au BufRead,BufNewFile *.rb setlocal textwidth=120
-
+" if executable('ag')
+  " let g:ackprg = 'ag --vimgrep'
+" endif
 " autocmd BufRead,BufNewFile *.html,*.js,*.xml call s:CompleteTags()
 
 
@@ -79,21 +83,23 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 " remap splits
 " nnoremap <C-a> <C-w>
-nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+
+nmap <C-§>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-§>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-§>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-§>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-§>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-§>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-§>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-§>d :scs find d <C-R>=expand("<cword>")<CR><CR>
 "Pathogen
 set nocp
 call pathogen#infect()
 
 " Set SPELLCHeCK YYAH
-" set spell spelllang=en_ca
-" hi SpellBad cterm=underline,bold
+set complete+=kspell
+set spell spelllang=en_us
+" hi SpellBad cterm=underline ",bold
 " set highlight SpellBad      ctermfg=Red         term=Reverse        guisp=Red       gui=undercurl   ctermbg=White
 
 " Fzf search enable
@@ -108,57 +114,61 @@ set tags=tags;/
 "let g:solarized_termcolors = 16
 call vundle#begin()
 
-" Set Theme
-Plugin 'junegunn/seoul256.vim'
-" color seoul256
-
-" Ocean theme VS
-" set t_Co=256
-Plugin 'mhartington/oceanic-next'
+Plugin 'thoughtbot/vim-rspec'
+" Plugin 'itmammoth/run-rspec.vim'
+" Plugin 'skwp/vim-rspec'
+" Plugin 'kana/vim-vspec'
+Plugin 'vim-airline/vim-airline'
+let g:airline#extensions#tabline#enabled = 1
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'codota/tabnine-vim'
+Plugin 'godlygeek/tabular'
+Plugin 'alxekb/vim-tags'
+let g:vim_tags_auto_generate = 1
+Plugin 'plasticboy/vim-markdown'
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'webastien/vim-ctags'
+Plugin 'dart-lang/dart-vim-plugin'
+Plugin 'natebosch/vim-lsc'
+Plugin 'natebosch/vim-lsc-dart'
+Plugin 'neoclide/coc.nvim'
 Plugin 'ecomba/vim-ruby-refactoring'
-Plugin 'https://github.com/adelarsq/vim-matchit'
-" colorscheme OceanicNext
-" let g:oceanic_next_terminal_bold = 1
-
-Plugin 'geoffharcourt/vim-ruby-private-method-extract'
-" let Vundle manage Vundle, required
+Plugin 'adelarsq/vim-matchit'
 Plugin 'VundleVim/Vundle.vim'
-
-" Plugin 'vim-airline/vim-airline'
-" Plugin 'vim-airline/vim-airline-themes'
 Plugin 'dyng/ctrlsf.vim'
 Plugin 'rizzatti/dash.vim'
 Plugin 'skywind3000/vim-preview'
-Plugin 'dracula/vim', { 'name': 'dracula' }
 Plugin 'haya14busa/incsearch.vim'
-" plugin on GitHub repo
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-rhubarb'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
+" Plugin 'townk/vim-autoclose'
 Plugin 'tpope/vim-repeat'
-" Scala highlights
-Plugin 'prettier/vim-prettier'
-" Plugin 'derekwyatt/vim-scala'
-" neocomplete Plugin
-Plugin 'Shougo/neocomplete.vim'
-" show git diif in vim
-Plugin 'airblade/vim-gitgutter'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Install L9 and avoid a Naming conflict if you've already
-" installed a
-" different version somewhere else.
-
-Plugin 'ekalinin/Dockerfile.vim'
-Plugin 'skywind3000/vim-quickui'
-Plugin 'ascenator/L9', {'name': 'newL9'}
-Bundle 'vim-ruby/vim-ruby'
+Plugin 'tpope/vim-commentary'
+noremap ÷ :Commentary<CR>
+autocmd FileType ruby setlocal commentstring=#\ %s
+map <S-d> :tabnext<CR>
+map <S-w> :tabnew<CR>
+map <S-s> :tabpr<CR>
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-ragtag'
+Plugin 'tpope/vim-haml'
+Plugin 'prettier/vim-prettier'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'ekalinin/Dockerfile.vim'
+Plugin 'skywind3000/vim-quickui'
+Plugin 'ascenator/L9', {'name': 'newL9'}
+" Bundle 'vim-ruby/vim-ruby'
+Plugin 'rking/ag.vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
-" Fzg plugin
+Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
+Plugin 'chengzeyi/fzf-preview.vim'
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 " remap envoke key
 nnoremap <silent> <C-z> :FZF<CR>
 nnoremap <silent> <C-x> :Buffers<CR>
@@ -167,44 +177,21 @@ nnoremap <silent> <C-x> :Buffers<CR>
 Plugin 'jremmen/vim-ripgrep'
 let g:rg_highlight = 1
 
-Plugin 'townk/vim-autoclose'
-
-"" Quick comment toggling
-Plugin 'tpope/vim-commentary'
-noremap ÷ :Commentary<CR>
-autocmd FileType ruby setlocal commentstring=#\ %s
-
-" Files stucture tree
-" Plugin 'scrooloose/nerdtree'
-"map <C-m> :NERDTreeToggle<CR>
-" map - :NERDTreeToggle<CR>
-" map <leader>r :NERDTreeFind<cr>
-" autocmd BufWinEnter * NERDTreeFind
-" map ] :NERDTreeFind<CR>
-
-map <S-d> :tabnext<CR>
-map <S-w> :tabnew<CR>
-map <S-s> :tabpr<CR>
-
-Plugin 'craigemery/vim-autotag'
+" Plugin 'craigemery/vim-autotag'
 Plugin 'slim-template/vim-slim.git'
-" Plugin 'pangloss/vim-javascript'
 Plugin 'sheerun/vim-polyglot'
-" Plugin 'maxmellon/vim-jsx-pretty'
-Plugin 'alvan/vim-closetag'     "Auto close (X)HTML tags
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx'
+"Auto close (X)HTML tags
+" Plugin 'alvan/vim-closetag'
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js'
+" Plugin 'mileszs/ack.vim'
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'w0rp/ale'
 
 call vundle#end()            " required
 
-" Ctrl-P configurations
-" let g:ctrlp_map = '<c-p>'
-" let g:ctrlp_cmd = 'CtrlP'
-" Ctags with Ctrl-P
-" nnoremap <leader>. :CtrlPTag<cr>
-
 "Neocomplete configurations
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#enable_smart_case = 1
+" let g:neocomplete#enable_at_startup = 1
+" let g:neocomplete#enable_smart_case = 1
 " Move up and down in autocomplete with <c-j> and <c-k>
 inoremap <expr> <c-j> ("\<C-n>")
 inoremap <expr> <c-k> ("\<C-p>")
@@ -227,7 +214,6 @@ let g:fzf_colors =
 
 " ALE
 nmap <LEADER>af :ALEFix<CR>
-Plugin 'w0rp/ale'
 let g:ale_lint_on_text_changed = 1
 let g:ale_lint_on_save = 1
 let g:ale_set_loclist = 1
@@ -246,7 +232,6 @@ let g:ale_fixers = {
 \  'css': ['prettier'],
 \}
 let g:ale_linters = {
-\    'python': ['pycodestyle'],
 \    'ruby': ['rubocop'],
 \    'jsx': ['stylelint', 'eslint'],
 \    'javascript': ['eslint'],
@@ -258,4 +243,21 @@ let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
 let g:netrw_hide = 0
 set shell=/usr/local/bin/bash
+highlight! link DiffText MatchParen
+command -nargs=* Glg Git! log --graph --pretty=format:'\%h - (\%ad)\%d \%s <\%an>' --abbrev-commit --date=local <args>
 " source ~/.vim/plugins/cscope_maps.vim
+autocmd BufRead,BufNewFile *.md setlocal spell
+" let g:vim_markdown_conceal
+" Preview for :Ag
+" command! -bang -nargs=* Ag
+" \ call fzf#vim#ag(<q-args>,
+" \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+" \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+" \                 <bang>0)
+
+
+" command! -bang -nargs=* Ag
+"   \ call fzf#vim#grep(
+"   \   'ag --column --numbers --noheading --color --smart-case '.shellescape(<q-args>), 1,
+"   \   fzf#vim#with_preview(), <bang>0)
+
