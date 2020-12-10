@@ -8,6 +8,7 @@ filetype on
 filetype indent on
 filetype plugin on
 set clipboard=unnamedplus
+set scrolloff=3
 set clipboard^=unnamed
 set mouse=r
 set backspace=indent,eol,start
@@ -28,7 +29,7 @@ map <Leader>f :let @/=expand("%:t") <Bar> execute 'Explore' expand("%:h") <Bar> 
 set hlsearch
 let g:netrw_winsize = 28
 let g:incsearch#auto_nohlsearch = 1
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
 autocmd FileType gitcommit noremap <buffer> dt :GdiffInTab<CR>
 map n  <Plug>(incsearch-nohl-n)
 map N  <Plug>(incsearch-nohl-N)
@@ -113,13 +114,14 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 set tags=tags;/
 "let g:solarized_termcolors = 16
 call vundle#begin()
-
 Plugin 'thoughtbot/vim-rspec'
 " Plugin 'itmammoth/run-rspec.vim'
 " Plugin 'skwp/vim-rspec'
 " Plugin 'kana/vim-vspec'
 Plugin 'vim-airline/vim-airline'
-let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='monochrome'
+let g:airline#toggle = 1
+" let g:airline#extensions#tabline#enabled = 1
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'codota/tabnine-vim'
 Plugin 'godlygeek/tabular'
@@ -260,4 +262,3 @@ autocmd BufRead,BufNewFile *.md setlocal spell
 "   \ call fzf#vim#grep(
 "   \   'ag --column --numbers --noheading --color --smart-case '.shellescape(<q-args>), 1,
 "   \   fzf#vim#with_preview(), <bang>0)
-
