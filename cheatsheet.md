@@ -7,3 +7,5 @@
 `R` - replace text
 
 `<C-v>` - multiline edit - `I` - insert `123` and apply to selection with `esc`
+
+:tabonly     - close all other tabs (show only the current tab)
