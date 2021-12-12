@@ -16,19 +16,19 @@ set rtp+=~/.vim/bundle/vundle.vim
 set tags=tags;/
 set laststatus=2
 
-function! MyStatusLine()
-    let l:w = min([14,winwidth(0)/2-3])
-    return expand("%f %h%w%m%r%=%-" . l:w . ".(%l,%c%V%) %P")
-endfunction
-set statusline=%{MyStatusLine()}
-
+" function! MyStatusLine()
+"     let l:w = min([14,winwidth(0)/2-3])
+"     return expand("%f %h%w%m%r%=%-" . l:w . ".(%l,%c%V%) %P")
+" endfunction
+" set statusline=%{MyStatusLine()}
 
 au BufRead,BufNewFile *.rb setlocal textwidth=120
-autocmd bufread,bufnewfile *.md setlocal spell
 au BufNewFile,BufRead *.es6 set filetype=javascript
 
-syntax enable
-syntax on
+autocmd bufread,bufnewfile *.md setlocal spell
+
+" syntax enable
+" syntax on
 
 filetype plugin indent on
 filetype on
@@ -88,9 +88,10 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 noremap <c-m> :Commentary<cr>
-nnoremap <leader> 0 :Git log --since=midnight --pretty=format:"%s" <cr>
+nnoremap <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
 nnoremap <silent> <c-z> :FZF<cr>
 nnoremap <silent> <c-x> :Buffers<cr>
+
 
 inoremap ˚ <Esc>:m .-2<CR>==gi
 inoremap ∆ <Esc>:m .+1<CR>==gi
@@ -101,6 +102,7 @@ nmap <silent> <leader>d <Plug>DashSearch
 nmap <leader>af :ALEFix<cr>
 nmap <leader>n :ALENext<cr>
 nmap = :Rex<cr>
+nmap § :Vex<cr>
 map <s-d> :tabnext<cr>
 map <s-w> :tabnew<cr>
 map <s-s> :tabpr<cr>
@@ -134,6 +136,7 @@ let g:gutentags_generate_on_empty_buffer = 0
 let g:gutentags_cache_dir = expand('~/.cache/tags')
 
 let g:fzf_preview_window = ['up:60%', 'ctrl-/']
+let g:fzf_buffers_jump = 1
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.85 } }
 
 command! -bang -nargs=* Ag
@@ -172,13 +175,14 @@ let g:ale_linters = {
 \    'css': ['prettier'],
 \    'es6': ['eslint', 'prettier']
 \}
+
 let g:ale_ruby_rubocop_executable =  '/users/ai/.rbenv/shims/rubocop'
 let g:ruby_indent_access_modifier_style = 'normal'
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
 
 highlight! link difftext matchparen
-command -nargs=* Glg Git log --graph --pretty=format:'\%h - (\%ad)\%d \%s <\%an>' --abbrev-commit --date=local <args>
+command -nargs=* Glg Git log --graph --pretty=format:'%h - (%ad)%d %s <%an>' --abbrev-commit --date=local <args>
 
 
 ""Cursor settings:
@@ -306,10 +310,10 @@ nmap <F5> <Plug>(lcn-menu)
 " Or map each action separately
 nmap <silent>K <Plug>(lcn-hover)
 
-augroup disableCocInDiff
-  autocmd!
-  autocmd DiffUpdated * let b:coc_enabled=0
-augroup END
+" augroup disableCocInDiff
+  " autocmd!
+  " autocmd DiffUpdated * let b:coc_enabled=0
+" augroup END
 autocmd bufread,bufnewfile *.md setlocal spell
 
 hi CursorColumn ctermfg=gray ctermbg=none
@@ -356,94 +360,52 @@ noremap <Right> <nop>
 
 call vundle#begin()
 
-Plugin 'jremmen/vim-ripgrep'
-Plugin 'borissov/fugitive-bitbucketserver'
-Plugin 'thoughtbot/vim-rspec'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'tpope/vim-rails'
-Plugin 'pope/vim-abolish'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-haml'
+Plugin 'aklt/plantuml-syntax'
+Plugin 'alvan/vim-closetag'
+Plugin 'adelarsq/vim-matchit'
+Plugin 'alxekb/vim-tags'
+Plugin 'zxqfl/tabnine-vim'
+Plugin 'ecomba/vim-ruby-refactoring'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'fatih/vim-go'
+Plugin 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
-Plugin 'chengzeyi/fzf-preview.vim'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'jparise/vim-graphql'
+Plugin 'jremmen/vim-ripgrep'
 Plugin 'rking/ag.vim'
 Plugin 'slim-template/vim-slim.git'
 Plugin 'sheerun/vim-polyglot'
-Plugin 'alvan/vim-closetag'
-Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'w0rp/ale'
-Plugin 'jparise/vim-graphql'
 Plugin 'skywind3000/gutentags_plus'
-Plugin 'codota/tabnine-vim'
-Plugin 'alxekb/vim-tags'
+Plugin 'scrooloose/vim-slumlord'
+Plugin 'rizzatti/dash.vim'
+
 Plugin 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-Plugin 'terryma/vim-multiple-cursors'
+
 Plugin 'weirongxu/plantuml-previewer.vim'
 Plugin 'Rainbow-Parenthesis'
-Plugin 'vim-test/vim-test'
-Plugin 'ecomba/vim-ruby-refactoring'
-Plugin 'vim-ruby/vim-ruby'
+
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-haml'
 Plugin 'tpope/vim-unimpaired'
-Plugin 'adelarsq/vim-matchit'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-commentary'
-Plugin 'Vundlevim/Vundle.vim'
-Plugin 'rizzatti/dash.vim'
-Plugin 'haya14busa/incsearch.vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
-Plugin 'aklt/plantuml-syntax'
-Plugin 'scrooloose/vim-slumlord'
-Plugin 'yuttie/comfortable-motion.vim'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-commentary'
 
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'tyru/open-browser.vim'
-Plugin 'fatih/vim-go'
+Plugin 'Vundlevim/Vundle.vim'
+Plugin 'ludovicchabant/vim-gutentags'
 
-" Plugin 'justinmk/vim-sneak'
-" map f <plug>sneak_s
-" map f <plug>sneak_s
-" let g:move_key_modifier = 'c'
-
-" Plugin 'itmammoth/run-rspec.vim'
-" Plugin 'skwp/vim-rspec'
-" Plugin 'kana/vim-vspec'
-" Plugin 'vim-airline/vim-airline'
-" set background=light
-" Plugin 'vim-airline/vim-airline-themes'
-
-" Plugin 'matze/vim-move'
-" Plugin 'godlygeek/tabular'
-" let g:vim_tags_auto_generate = 1
-" Plugin 'plasticboy/vim-markdown'
-" Plugin 'shougo/deoplete.nvim'
-" Plugin 'webastien/vim-ctags'
-" Plugin 'dart-lang/dart-vim-plugin'
-" Plugin 'natebosch/vim-lsc'
-" Plugin 'natebosch/vim-lsc-dart'
-" Plugin 'skywind3000/vim-preview'
-" Plugin 'tpope/vim-rhubarb'
-" Plugin 'dyng/ctrlsf.vim'
-
-" Plugin 'mileszs/ack.vim'
-" Plugin 'itchyny/vim-cursorword'
-" Plugin 'gregsexton/MatchTag'
-" Plugin 'fannheyward/coc-react-refactor'
-" Plugin 'conornewton/vim-pandoc-markdown-preview'
-" Plugin 'shougo/neosnippet.vim'
-
-" Plugin 'shougo/neosnippet-snippets'
-" Plugin 'maxbrunsfeld/vim-yankstack'
-" Plugin 'ervandew/supertab'
-" Plugin 'pedrohdz/vim-yaml-folds'
-" Plugin 'godlygeek/tabular'
-" Plugin 'plasticboy/vim-markdown'
-" Plugin 'mattn/vim-gist'
-" Plugin 'mattn/webapi-vim'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'vim-test/vim-test'
+Plugin 'w0rp/ale'
 
 call vundle#end()            " required
