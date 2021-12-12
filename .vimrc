@@ -1,19 +1,47 @@
 set nocompatible              " be iMproved, required
 set number
 syntax enable
+set spell
 "set shell=zsh
 syntax on
 filetype plugin indent on
 "" let g:coc_force_debug = 1
-"filetype on
+filetype on
 filetype indent on
 filetype plugin on
 "nmap <leader>i :CocCommand tsserver.organizeImports<cr>
-"let g:netrw_banner=0
-"let g:netrw_altv=1
-"let g:netrw_browse_split = 4
-"let g:netrw_winsize = 34
-"" let g:netrw_keepdir = 0
+let g:indentLine_char = '⦙'
+let g:netrw_banner=0
+let g:netrw_hide=0
+let g:netrw_altv=1
+let g:netrw_browse_split = 0
+let g:netrw_winsize = 34
+let g:netrw_liststyle = 4
+let g:netrw_localcopydircmd = 'cp -r'
+let g:netrw_keepdir = 1
+augroup netrw_mapping
+  autocmd!
+  autocmd filetype netrw call NetrwMapping()
+augroup END
+
+nnoremap <leader>c :Dispatch
+nnoremap <leader>rr :Dispatch rubocop -A %<CR>
+nnoremap <leader>tt :Dispatch RAILS_ENV=test rails rswag SWAGGER_DRY_RUN=0<CR>
+nnoremap <leader>dd :Lexplore %:p:h<CR>
+nnoremap <Leader>ee :Lexplore<CR>
+function! NetrwMapping()
+  nmap <buffer> H u
+  nmap <buffer> h -^
+  nmap <buffer> l <CR>
+
+  nmap <buffer> . gh
+  nmap <buffer> P <C-w>z
+
+  nmap <buffer> L <CR>:Lexplore<CR>
+  nmap <buffer> <Leader>dd :Lexplore<CR>
+endfunction
+nnoremap <leader>f :Rg<CR>
+
 set scrolloff=3
 set clipboard=unnamed
 "set mouse=r
@@ -23,7 +51,7 @@ set nofoldenable
 hi Folded ctermbg=NONE ctermfg=DarkCyan
 set expandtab tabstop=2 shiftwidth=2 softtabstop=2
 "map <Leader>f :let @/=expand("%:t") <Bar> execute 'Explore' expand("%:h") <Bar> normal n<CR>
-"set hlsearch
+set hlsearch
 "let g:incsearch#auto_nohlsearch = 1
 "let g:snipMate = { 'snippet_version' : 1 }
 "autocmd FileType gitcommit noremap <buffer> dt :GdiffInTab<CR>
@@ -62,6 +90,8 @@ au BufNewFile,BufRead *.es6 set filetype=javascript
 "" :nnoremap <Leader>c :set cursorline! <CR>
 
 "" move lines
+nnoremap  <M-k> :m .-2<CR>
+nnoremap  <M-j> :m .+1<CR>
 nnoremap ˚ :m .-2<CR>==
 nnoremap ∆ :m .+1<CR>==
 inoremap ˚ <Esc>:m .-2<CR>==gi
@@ -112,7 +142,7 @@ call vundle#begin()
 ""     \ 'do': 'bash install.sh',
 ""     \ }
 Plugin 'borissov/fugitive-bitbucketserver'
-Plugin 'itchyny/vim-cursorword'
+" Plugin 'itchyny/vim-cursorword'
 Plugin 'weirongxu/plantuml-previewer.vim'
 "Plugin 'gregsexton/MatchTag'
 "Plugin 'fannheyward/coc-react-refactor'
@@ -125,7 +155,7 @@ Plugin 'terryma/vim-multiple-cursors'
 "Plugin 'pedrohdz/vim-yaml-folds'
 "" plugin 'godlygeek/tabular'
 "" Plugin 'plasticboy/vim-markdown'
-"Plugin 'Rainbow-Parenthesis'
+Plugin 'Rainbow-Parenthesis'
 Plugin 'vim-test/vim-test'
 "Plugin 'mattn/vim-gist'
 "Plugin 'mattn/webapi-vim'
@@ -151,7 +181,7 @@ Plugin 'yuttie/comfortable-motion.vim'
 
 ""
 """ Plugin 'henrik/vim-open-url'
-"Plugin 'ap/vim-css-color'
+" Plugin 'ap/vim-css-color'
 Plugin 'fatih/vim-go'
 "" Plugin 'kamykn/dark-theme.vim'
 "" colorscheme darktheme
@@ -218,12 +248,14 @@ let g:coc_global_extensions = [ 'coc-tsserver', 'coc-solargraph' ]
 "  " let col = col('.') - 1
 "  " return !col || getline('.')[col - 1]  =~# '\s'
 "" endfunction
-"Plugin 'ecomba/vim-ruby-refactoring'
+Plugin 'ecomba/vim-ruby-refactoring'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'tpope/vim-unimpaired'
 Plugin 'adelarsq/vim-matchit'
 Plugin 'Vundlevim/Vundle.vim'
 "Plugin 'dyng/ctrlsf.vim'
 Plugin 'rizzatti/dash.vim'
-"Plugin 'skywind3000/vim-preview'
+" Plugin 'skywind3000/vim-preview'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'tpope/vim-dispatch'
 "Plugin 'tpope/vim-rhubarb'
@@ -238,6 +270,7 @@ map <s-d> :tabnext<cr>
 map <s-w> :tabnew<cr>
 map <s-s> :tabpr<cr>
 Plugin 'tpope/vim-rails'
+Plugin 'pope/vim-abolish'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-haml'
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -248,6 +281,7 @@ Plugin 'rking/ag.vim'
 let g:fzf_preview_window = ['up:60%', 'ctrl-/']
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.85 } }
 
+nnoremap <leader> 0 :Git log --since=midnight --pretty=format:"%s" <cr>
 command! -bang -nargs=* Ag
 \ call fzf#vim#grep(
 \   'ag --column --numbers --noheading  --smart-case '.shellescape(<q-args>), 1,
@@ -257,6 +291,7 @@ nnoremap <silent> <c-z> :FZF<cr>
 nnoremap <silent> <c-x> :Buffers<cr>
 " ripgrep
 Plugin 'jremmen/vim-ripgrep'
+Plugin 'miyase256/vim-ripgrep'
 let g:rg_highlight = 1
 
 Plugin 'slim-template/vim-slim.git'
@@ -264,17 +299,23 @@ Plugin 'sheerun/vim-polyglot'
 Plugin 'alvan/vim-closetag'
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
 " Plugin 'mileszs/ack.vim'
-" Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'w0rp/ale'
 Plugin 'jparise/vim-graphql'
 Plugin 'skywind3000/gutentags_plus'
+let g:gutentags_define_advanced_commands = 1
 " enable gtags module
-" let g:gutentags_modules = ['ctags', 'gtags_cscope']
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
 
 " config project root markers.
 let g:gutentags_project_root = ['.root']
 let g:gutentags_auto_add_gtags_cscope = 0
-
+let g:gutentags_add_default_project_roots = 0
+let g:gutentags_project_root = ['package.json', '.git']
+let g:gutentags_generate_on_new = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_empty_buffer = 0
 " generate datebases in my cache directory, prevent gtags files polluting my project
 let g:gutentags_cache_dir = expand('~/.cache/tags')
 
@@ -292,12 +333,14 @@ let g:ale_lint_on_save = 1
 " let g:ale_fix_on_save = 1
 " Enable completion where available.
 let g:ale_completion_enabled = 0
+" let g:ale_completion_enabled = 1
 let g:ale_set_loclist = 1
 let g:ale_linters_explicit = 1
 " Write this in your vimrc file
 let g:ale_lint_on_text_changed = 'never'
 " Show 5 lines of errors (default: 10)
 let g:ale_list_window_size = 5
+" let g:ale_list_window_size = 5
 " You can disable this option too
 " if you don't want linters to run on opening a file
 let g:ale_lint_on_enter = 0
@@ -320,9 +363,10 @@ let g:ale_fixers = {
 \  'yaml': ['yamllint'],
 \}
 let g:ale_linters = {
-\    'ruby': ['rubocop', 'brakeman'],
+\    'ruby': ['rubocop', 'rufo', 'brakeman', 'rails_best_practices'],
 \    'jsx': ['stylelint', 'eslint'],
 \    'javascript': ['eslint', 'stylelint'],
+\    'typescript': ['eslint'],
 \    'yaml': ['yamllint'],
 \    'scss': ['prettier'],
 \    'sass': ['prettier'],
@@ -334,9 +378,8 @@ let g:ale_ruby_rubocop_executable =  '/users/ai/.rbenv/shims/rubocop'
 let g:ruby_indent_access_modifier_style = 'normal'
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
-" let g:netrw_hide = 0
 highlight! link difftext matchparen
-" command -nargs=* Glg Git log --graph --pretty=format:'\%h - (\%ad)\%d \%s <\%an>' --abbrev-commit --date=local <args>
+command -nargs=* Glg Git log --graph --pretty=format:'\%h - (\%ad)\%d \%s <\%an>' --abbrev-commit --date=local <args>
 " source ~/.vim/Plugins/cscope_maps.vim
 autocmd bufread,bufnewfile *.md setlocal spell
 " let g:vim_markdown_conceal
@@ -352,63 +395,60 @@ function! MyStatusLine()
     return expand("%f %h%w%m%r%=%-" . l:w . ".(%l,%c%V%) %P")
 endfunction
 set statusline=%{MyStatusLine()}
-"nmap <leader>rn <plug>(coc-rename)
-"nnoremap <leader>c :let @+=expand('%:p')<cr>
 
 " set complete+=kspell
-"autocmd bufread,bufnewfile *.md setlocal spell
+autocmd bufread,bufnewfile *.md setlocal spell
 
-"let g:gutentags_ctags_exclude = [
-"      \ '*.git', '*.svg', '*.hg',
-"      \ '*/tests/*',
-"      \ 'build',
-"      \ 'dist',
-"      \ '*sites/*/files/*',
-"      \ 'bin',
-"      \ 'node_modules',
-"      \ 'bower_components',
-"      \ 'cache',
-"      \ 'compiled',
-"      \ 'docs',
-"      \ 'example',
-"      \ 'bundle',
-"      \ 'vendor',
-"      \ '*.md',
-"      \ '*-lock.json',
-"      \ '*.lock',
-"      \ '*bundle*.js',
-"      \ '*build*.js',
-"      \ '.*rc*',
-"      \ '*.json',
-"      \ '*.min.*',
-"      \ '*.map',
-"      \ '*.bak',
-"      \ '*.zip',
-"      \ '*.pyc',
-"      \ '*.class',
-"      \ '*.sln',
-"      \ '*.master',
-"      \ '*.csproj',
-"      \ '*.tmp',
-"      \ '*.csproj.user',
-"      \ '*.cache',
-"      \ '*.pdb',
-"      \ 'tags*',
-"      \ 'cscope.*',
-"      \ '*.css',
-"      \ '*.less',
-"      \ '*.scss',
-"      \ '*.js',
-"      \ '*.coffee',
-"      \ 'jsx',
-"      \ '*.exe', '*.dll',
-"      \ '*.mp3', '*.ogg', '*.flac',
-"      \ '*.swp', '*.swo',
-"      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
-"      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
-"      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
-"      \ '*.rb',
-"      \ ]
+let g:gutentags_ctags_exclude = [
+     \ '*.git', '*.svg', '*.hg',
+     \ '*/tests/*',
+     \ 'build',
+     \ 'dist',
+     \ '*sites/*/files/*',
+     \ 'bin',
+     \ 'node_modules',
+     \ 'bower_components',
+     \ 'cache',
+     \ 'compiled',
+     \ 'docs',
+     \ 'example',
+     \ 'bundle',
+     \ 'vendor',
+     \ '*.md',
+     \ '*-lock.json',
+     \ '*.lock',
+     \ '*bundle*.js',
+     \ '*build*.js',
+     \ '.*rc*',
+     \ '*.json',
+     \ '*.min.*',
+     \ '*.map',
+     \ '*.bak',
+     \ '*.zip',
+     \ '*.pyc',
+     \ '*.class',
+     \ '*.sln',
+     \ '*.master',
+     \ '*.csproj',
+     \ '*.tmp',
+     \ '*.csproj.user',
+     \ '*.cache',
+     \ '*.pdb',
+     \ 'tags*',
+     \ 'cscope.*',
+     \ '*.css',
+     \ '*.less',
+     \ '*.scss',
+     \ '*.js',
+     \ '*.coffee',
+     \ 'jsx',
+     \ '*.exe', '*.dll',
+     \ '*.mp3', '*.ogg', '*.flac',
+     \ '*.swp', '*.swo',
+     \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+     \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+     \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+     \ ]
 
 let test#strategy = "dispatch"
 
@@ -481,8 +521,8 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 
 "set diffopt+=iwhite
 
-"nmap ]h <Plug>(GitGutterNextHunk)
-"nmap [h <Plug>(GitGutterPrevHunk)
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
 "command! Gqf GitGutterQuickFix | copen
 "highlight link GitGutterChangeLine DiffText
 
@@ -510,17 +550,7 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 "" endfunction
 "" map <silent> <C-E> :call ToggleVExplorer()<CR>
 
-"" let g:LanguageClient_serverCommands = {
-""     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-""     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-""     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-""     \ 'python': ['/usr/local/bin/pyls'],
-""     \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-""     \ }
-
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-set guifont=Menlo\ Regular:h15
-let g:LanguageClient_autoStop = 0
+let g:LanguageClient_autoStop = 1
 " Tell the language client to use the default IP and port
 " that Solargraph runs on
 let g:LanguageClient_serverCommands = {
@@ -535,12 +565,57 @@ let g:LanguageClient_serverCommands = {
 nmap <F5> <Plug>(lcn-menu)
 " Or map each action separately
 nmap <silent>K <Plug>(lcn-hover)
-nmap <silent> gd <Plug>(lcn-definition)
+" nmap <silent> gd <Plug>(lcn-definition)
 nmap <silent> <F2> <Plug>(lcn-rename)
 
 augroup disableCocInDiff
   autocmd!
   autocmd DiffUpdated * let b:coc_enabled=0
 augroup END
-let g:netrw_keepdir=0
-let g:fugitive_bitbucketservers_domains = ['https://bitbucket.org/goji-labs']
+set cursorcolumn
+hi CursorColumn ctermfg=gray ctermbg=none
+" hi CursorColumn ctermfg=white ctermbg=none
+" hi CursorColumn ctermfg=black ctermbg=none
+
+" Add autogroup for tag generation
+augroup tagAug
+  autocmd!
+  " If we're working in a git commit (or similar), disable tag file generation
+  autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
+augroup end
+set virtualedit=all
+" set runtimepath+=~/.vim-plugins/LanguageClient-neovim
+let g:coc_global_extensions = ['coc-solargraph']
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+let g:netrw_sizestyle= "h"
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always {}"
+
+nnoremap ]q :cnext<cr>zz
+nnoremap [q :cprev<cr>zz
+
+noremap <Up> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+
+" inoremap <Up> <nop>
+" inoremap <Down> <nop>
+" inoremap <Left> <nop>
+" inoremap <Right> <nop>
+
+nnoremap gb :ls<CR>:b<Space>
