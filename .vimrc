@@ -89,8 +89,14 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 noremap <c-m> :Commentary<cr>
 nnoremap <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
+nnoremap <silent> 1 :FZF<cr>
+nnoremap <silent> 2 :Git<cr>
+nnoremap <silent> 3 :Rg<cr>
+nnoremap <silent> 4 :Buffers<cr>
+nnoremap <silent> 5 :Commits<cr>
 nnoremap <silent> <c-z> :FZF<cr>
 nnoremap <silent> <c-x> :Buffers<cr>
+
 
 
 inoremap ˚ <Esc>:m .-2<CR>==gi
@@ -103,9 +109,9 @@ nmap <leader>af :ALEFix<cr>
 nmap <leader>n :ALENext<cr>
 nmap = :Rex<cr>
 nmap § :Vex<cr>
-map <s-d> :tabnext<cr>
-map <s-w> :tabnew<cr>
-map <s-s> :tabpr<cr>
+map <tab> :tabnext<cr>
+map <space> :tabnew<cr>
+map <s-tab> :tabpr<cr>
 
 let g:coc_global_extensions = [ 'coc-tsserver', 'coc-solargraph' ]
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
@@ -113,7 +119,6 @@ let g:netrw_liststyle = 4
 
 let g:ale_lint_on_text_changed = 0
 let g:ale_lint_on_save = 1
-let g:ale_completion_enabled = 1
 let g:ale_set_loclist = 1
 let g:ale_linters_explicit = 1
 let g:ale_lint_on_text_changed = 'never'
@@ -155,7 +160,6 @@ let g:ale_fixers = {
 \    'remove_trailing_lines',
 \    'trim_whitespace',
 \    'rubocop',
-\    'brakeman',
 \  ],
 \  'javascript': ['prettier'],
 \  'jsx': ['stylelint', 'eslint'],
@@ -165,7 +169,7 @@ let g:ale_fixers = {
 \  'yaml': ['yamllint'],
 \}
 let g:ale_linters = {
-\    'ruby': ['rubocop', 'rufo', 'brakeman', 'rails_best_practices'],
+\    'ruby': ['rubocop', 'rufo', 'rails_best_practices'],
 \    'jsx': ['stylelint', 'eslint'],
 \    'javascript': ['eslint', 'stylelint'],
 \    'typescript': ['eslint'],
@@ -263,41 +267,13 @@ nmap <silent> gr <plug>(coc-references)
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 
-"" Remap keys for applying codeAction to the current buffer.
 nmap <leader>ac  <Plug>(coc-codeaction)
-"" Apply AutoFix to problem on the current line.
 nmap <leader>qf  <Plug>(coc-fix-current)
 nmap ]h <Plug>(GitGutterNextHunk)
 nmap [h <Plug>(GitGutterPrevHunk)
 "command! Gqf GitGutterQuickFix | copen
 highlight link GitGutterChangeLine DiffText
 
-
-"nnoremap <leader>s :ToggleWorkspace<CR>
-
-"" Toggle Vexplore with Ctrl-E
-"" function! ToggleVExplorer()
-""   if exists("t:expl_buf_num")
-""       let expl_win_num = bufwinnr(t:expl_buf_num)
-""       if expl_win_num != -1
-""           let cur_win_nr = winnr()
-""           exec expl_win_num . 'wincmd w'
-""           close
-""           exec cur_win_nr . 'wincmd w'
-""           unlet t:expl_buf_num
-""       else
-""           unlet t:expl_buf_num
-""       endif
-""   else
-""       exec '1wincmd w'
-""       Vexplore
-""       let t:expl_buf_num = bufnr("%")
-""   endif
-"" endfunction
-"" map <silent> <C-E> :call ToggleVExplorer()<CR>
-
-" Tell the language client to use the default IP and port
-" that Solargraph runs on
 let g:LanguageClient_autoStop = 1
 let g:LanguageClient_serverCommands = {
     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
@@ -328,8 +304,9 @@ augroup tagAug
   autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
 augroup end
 
-set virtualedit=all
-" set runtimepath+=~/.vim-plugins/LanguageClient-neovim
+set virtualedit=onemore
+set runtimepath+=~/.vim-plugins/LanguageClient-neovim
+
 let g:coc_global_extensions = ['coc-solargraph']
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
@@ -341,7 +318,7 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-let g:netrw_sizestyle= "h"
+" let g:netrw_sizestyle= "h"
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -364,7 +341,7 @@ Plugin 'aklt/plantuml-syntax'
 Plugin 'alvan/vim-closetag'
 Plugin 'adelarsq/vim-matchit'
 Plugin 'alxekb/vim-tags'
-Plugin 'zxqfl/tabnine-vim'
+" Plugin 'codota/tabnine'
 Plugin 'ecomba/vim-ruby-refactoring'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'fatih/vim-go'
