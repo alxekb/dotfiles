@@ -98,11 +98,11 @@ source $ZSH/oh-my-zsh.sh
 # export lang=en_us.utf-8
 
 # preferred editor for local and remote sessions
-# if [[ -n $ssh_connection ]]; then
-#   export editor='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $ssh_connection ]]; then
+  export editor='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -117,13 +117,14 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PATH="/usr/local/mysql-5.7.21-macos10.13-x86_64/bin/:$PATH"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export VISUAL=vim
+export VISUAL=nvim
 export EDITOR="$VISUAL"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$HOME/.flutter/flutter/bin:$PATH"
 
 alias mvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
 alias ctags="/usr/local/Cellar/ctags/5.8_2/bin/ctags"
+alias solargraph="/Users/ai/.rbenv/versions/3.1.0/bin/solargraph"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -235,8 +236,10 @@ alias pf="fzf --preview='less {}' --bind shift-up:preview-page-up,shift-down:pre
 export FZF_DEFAULT_OPTS="-m"
 FZF_DEFAULT_OPTS+=" --color='light'"
 FZF_DEFAULT_OPTS+=" --height 40%"
-FZF_DEFAULT_OPTS+=" --bind 'ctrl-u:preview-up,ctrl-d:preview-down,ctrl-o:toggle+up,ctrl-i:toggle+down,ctrl-space:toggle-preview'"
+FZF_DEFAULT_OPTS+=" --bind 'ctrl-k:preview-up,ctrl-j:preview-down,ctrl-o:toggle+up,ctrl-i:toggle+down,ctrl-space:toggle-preview'"
 FZF_DEFAULT_OPTS+=" --preview 'head -500 {}'"
 FZF_DEFAULT_OPTS+=" --preview-window 'right:60%' --margin=1,4"
 FZF_DEFAULT_OPTS+=" --ansi"
 FZF_DEFAULT_OPTS+=" --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+export GPG_TTY=$(tty)
+set -o vi

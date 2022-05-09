@@ -1,0 +1,1 @@
+/Users/ai/.config/nvim/init.vim

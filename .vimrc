@@ -1,7 +1,7 @@
 set nocompatible              " be iMproved, required
 set number
 set spell
-set scrolloff=3
+set scrolloff=7
 set clipboard=unnamed
 set backspace=indent,eol,start
 set hlsearch
@@ -15,12 +15,9 @@ set rtp+=/usr/local/opt/fzf
 set rtp+=~/.vim/bundle/vundle.vim
 set tags=tags;/
 set laststatus=2
-
-" function! MyStatusLine()
-"     let l:w = min([14,winwidth(0)/2-3])
-"     return expand("%f %h%w%m%r%=%-" . l:w . ".(%l,%c%V%) %P")
-" endfunction
-" set statusline=%{MyStatusLine()}
+set cc=80
+set ttyfast
+set completeopt=longest,menuone
 
 au BufRead,BufNewFile *.rb setlocal textwidth=120
 au BufNewFile,BufRead *.es6 set filetype=javascript
@@ -35,6 +32,7 @@ filetype on
 filetype indent on
 filetype plugin on
 
+" let g:UltiSnipsExpandTrigger="<Nop>"
 let g:indentLine_char = '⦙'
 let g:netrw_hide=0
 let g:netrw_banner=0
@@ -83,21 +81,15 @@ nnoremap  <M-k> :m .-2<CR>
 nnoremap  <M-j> :m .+1<CR>
 nnoremap ˚ :m .-2<CR>==
 nnoremap ∆ :m .+1<CR>==
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
 noremap <c-m> :Commentary<cr>
 nnoremap <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
-nnoremap <silent> 1 :FZF<cr>
-nnoremap <silent> 2 :Git<cr>
-nnoremap <silent> 3 :Rg<cr>
-nnoremap <silent> 4 :Buffers<cr>
-nnoremap <silent> 5 :Commits<cr>
+nnoremap <silent> 1  <esc>:FZF<cr>
+nnoremap <silent> 2 <esc>:Git<cr>
+nnoremap <silent> 3 <esc>:Rg<cr>
+nnoremap <silent> 4 <esc>:Buffers<cr>
+nnoremap <silent> 5 <esc>:Commits<cr>
 nnoremap <silent> <c-z> :FZF<cr>
 nnoremap <silent> <c-x> :Buffers<cr>
-
-
 
 inoremap ˚ <Esc>:m .-2<CR>==gi
 inoremap ∆ <Esc>:m .+1<CR>==gi
@@ -124,15 +116,15 @@ let g:ale_linters_explicit = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_list_window_size = 5
 
-autocmd filetype ruby setlocal commentstring=#\ %s
 let g:ale_lint_on_enter = 0
+autocmd filetype ruby setlocal commentstring=#\ %s
 let g:gutentags_define_advanced_commands = 1
 let g:gutentags_modules = ['ctags', 'gtags_cscope']
 
 " config project root markers.
 let g:gutentags_project_root = ['.root']
-let g:gutentags_auto_add_gtags_cscope = 0
-let g:gutentags_add_default_project_roots = 0
+let g:gutentags_auto_add_gtags_cscope = 1
+let g:gutentags_add_default_project_roots = 1
 let g:gutentags_project_root = ['package.json', '.git']
 let g:gutentags_generate_on_new = 1
 let g:gutentags_generate_on_missing = 1
@@ -307,7 +299,6 @@ augroup end
 set virtualedit=onemore
 set runtimepath+=~/.vim-plugins/LanguageClient-neovim
 
-let g:coc_global_extensions = ['coc-solargraph']
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
@@ -318,7 +309,7 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-" let g:netrw_sizestyle= "h"
+let g:netrw_sizestyle= "h"
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -330,24 +321,31 @@ let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always
 nnoremap ]q :cnext<cr>zz
 nnoremap [q :cprev<cr>zz
 
-noremap <Up> <nop>
-noremap <Down> <nop>
-noremap <Left> <nop>
-noremap <Right> <nop>
+" noremap <Up> <nop>
+" noremap <Down> <nop>
+" noremap <Left> <nop>
+" noremap <Right> <nop>
 
 call vundle#begin()
 
 Plugin 'aklt/plantuml-syntax'
+Plugin 'skywind3000/vim-preview'
+Plugin 'ap/vim-css-color'
+Plugin 'dracula/vim', { 'name': 'dracula' }
+" Plugin 'zxqfl/tabnine-vim'
+" Plugin 'tabnine/YouCompleteMe'
+" Plugin 'codota/tabnine'
 Plugin 'alvan/vim-closetag'
 Plugin 'adelarsq/vim-matchit'
 Plugin 'alxekb/vim-tags'
-" Plugin 'codota/tabnine'
 Plugin 'ecomba/vim-ruby-refactoring'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'fatih/vim-go'
 Plugin 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
+
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
+
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'jparise/vim-graphql'
 Plugin 'jremmen/vim-ripgrep'
@@ -362,12 +360,15 @@ Plugin 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+Plugin 'neoclide/coc-tabnine', {'do': 'yarn install --frozen-lockfile'}
 
 Plugin 'weirongxu/plantuml-previewer.vim'
 Plugin 'Rainbow-Parenthesis'
 
 Plugin 'terryma/vim-multiple-cursors'
+Plugin 'itchyny/vim-cursorword'
 Plugin 'thoughtbot/vim-rspec'
+
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-haml'
