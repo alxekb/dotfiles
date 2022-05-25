@@ -1,0 +1,21 @@
+{
+  "tabnine.priority": 999,
+  "suggest.timeout": 1950,
+  "suggest.triggerCompletionWait": 500,
+  "suggest.echodocSupport": true,
+  "codeLens.enable": true,
+  "solargraph.useBundler": false,
+  "solargraph.commandPath": "~/.rbenv/shims/solargraph",
+  "solargraph.formatting": true,
+  "suggest.maxCompleteItemCount": 16,
+  "diagnostic.errorSign": "¥",
+  "diagnostic.warningSign": "¥",
+  "diagnostic.infoSign": "¥",
+  "languageserver": {
+        "golang": {
+            "command": "gopls",
+            "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+            "filetypes": ["go"]
+        }
+    }
+}
