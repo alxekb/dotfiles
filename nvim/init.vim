@@ -5,7 +5,6 @@ set nocompatible              " be iMproved, required
 " source ~/.vimrc
 set background=light
 set number
-set nospell
 set scrolloff=9
 set clipboard=unnamed
 set backspace=indent,eol,start
@@ -15,22 +14,27 @@ set foldmethod=syntax
 set nofoldenable
 set expandtab tabstop=2 shiftwidth=2 softtabstop=2
 set cursorline
-set complete+=kspell
+" set complete+=kspell
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.vim/bundle/vundle.vim
 set tags=tags;/
 set laststatus=2
-set cc=80
+set cc=120
 set ttyfast
 set completeopt=longest,menuone
 set foldcolumn=1
 set noerrorbells
 set novisualbell
+set encoding=UTF-8
+set nowrap
+" set timeoutlen=500
+"
+set guifont=DroidSansMono\ Nerd\ Font:h11
 
 au BufRead,BufNewFile *.rb setlocal textwidth=120
 au BufNewFile,BufRead *.es6 set filetype=javascript
 au BufNewFile,BufRead *.ts set filetype=javascript
-autocmd bufread,bufnewfile *.md setlocal spell
+autocmd bufread,bufnewfile *.md,*.rb setlocal spell
 autocmd BufWritePre * %s/\s\+$//e
 
 autocmd filetype ruby setlocal commentstring=#\ %s
@@ -41,19 +45,21 @@ augroup netrw_mapping
 augroup END
 
 filetype plugin indent on
-" filetype on
-" filetype indent on
-" filetype plugin on
 
-let g:netrw_banner =0
-let g:netrw_keepdir =1
-let g:netrw_preview   =1
-let g:netrw_liststyle =3
-let g:netrw_winsize   =34
-let g:netrw_localcopydircmd ='cp -r'
-let g:AutoPairsShortcutFastWrap ='<M-e>'
-let g:AutoPairsFlyMode =1
+let g:netrw_banner = 0
+let g:netrw_keepdir = 1
+map <leader>e :40vs <C-R>=expand("%:p:h") . "/" <cr><cr>"/" expand("%:t")<cr>
+
+let g:netrw_preview   = 1
+let g:netrw_liststyle = 3
+let g:netrw_winsize   = 34
+let g:netrw_localcopydircmd = 'cp -r'
+let g:netrw_sizestyle= "h"
+
+let g:AutoPairsShortcutFastWrap = '<M-e>'
+let g:AutoPairsFlyMode = 1
 let g:AutoPairs = {'<%':'%>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
+
 nnoremap <silent> <leader>c :Dispatch
 nnoremap <silent> <leader>rr :Dispatch rubocop -A %<CR>
 nnoremap <silent> <leader>tt :Dispatch RAILS_ENV=test rails rswag SWAGGER_DRY_RUN=0<CR>
@@ -62,8 +68,8 @@ nnoremap <silent> <leader>df :Vexplore %:~:h<CR>
 nnoremap <silent> <leader>t  :Lexplore %:~:h<CR>
 nnoremap <silent> <leader>s :vsplit <C-R>=expand("%:p:h")<CR><CR>
 " nnoremap <leader>t :if expand("%:p:h") != "" \| exec "!" expand("%:p:h:S") \| endif<CR>
-nnoremap <silent> <leader>f :Rg
-nnoremap <silent> <Leader>ee :Lexplore<CR>
+nnoremap <silent> <leader>f :Rg<cr>
+nnoremap <silent> <leader>ee :Lexplore<CR>
 nnoremap <silent> ]q :cnext<cr>zz
 nnoremap <silent> [q :cprev<cr>zz
 
@@ -96,8 +102,8 @@ inoremap <silent> ∆ <Esc>:m .+1<CR>==gi
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 
-nnoremap <silent>0 "0p
-nnoremap <silent> <leader> 0 :Git log --since=midnight --pretty=format:"%s" <cr>
+nnoremap <silent>0  "0p
+nnoremap <silent> <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
 nnoremap <silent> <leader>1 <esc>:FZF<cr>
 nnoremap <silent> <leader>2 <esc>:Git<cr>
 nnoremap <silent> <leader>3 <esc>:Rg<cr>
@@ -108,8 +114,8 @@ nmap <silent> <leader>d <Plug>DashSearch
 nmap <silent> <leader>af :ALEFix<cr>
 nmap <silent> <leader>n :ALENext<cr>
 map <silent><space> :tabnew<cr>
-map <silent><tab> :tabnext<cr>
-map <silent><s-tab> :tabpr<cr>
+" map <silent><tab> :tabnext<cr>
+" map <silent><s-tab> :tabpr<cr>
 
 let g:coc_global_extensions = [ 'coc-tsserver', 'coc-solargraph' ]
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
@@ -124,18 +130,18 @@ let g:ale_list_window_size = 5
 
 
 " config project root markers.
-let g:gutentags_modules = ['ctags', 'gtags_cscope']
-let g:gutentags_define_advanced_commands = 1
-let g:gutentags_project_root = ['.root']
-" let g:gutentags_auto_add_gtags_cscope = 1
-let g:gutentags_add_default_project_roots = 1
-let g:gutentags_project_root = ['package.json', '.git']
-let g:gutentags_generate_on_new = 1
-let g:gutentags_generate_on_missing = 1
-let g:gutentags_generate_on_write = 1
-let g:gutentags_generate_on_empty_buffer = 0
-let g:gutentags_cache_dir = expand('~/.cache/tags')
-let g:gutentags_plus_switch = 1
+" let g:gutentags_modules = ['ctags', 'gtags_cscope']
+" let g:gutentags_define_advanced_commands = 1
+" let g:gutentags_project_root = ['.root']
+" " let g:gutentags_auto_add_gtags_cscope = 1
+" let g:gutentags_add_default_project_roots = 1
+" let g:gutentags_project_root = ['package.json', '.git']
+" let g:gutentags_generate_on_new = 1
+" let g:gutentags_generate_on_missing = 1
+" let g:gutentags_generate_on_write = 1
+" let g:gutentags_generate_on_empty_buffer = 0
+" let g:gutentags_cache_dir = expand('~/.cache/tags')
+" let g:gutentags_plus_switch = 1
 
 let g:fzf_preview_window = ['up:60%', 'ctrl-/']
 let g:fzf_buffers_jump = 1
@@ -163,23 +169,32 @@ let g:ale_fixers = {
 \  'css': ['prettier'],
 \  'scss': ['prettier'],
 \  'sass': ['prettier'],
-\  'yaml': ['yamllint'],
 \  'coffee': ['coffelint'],
+\  'c': ['clang-format'],
+\  'cpp': ['clang-format'],
+\  'json': ['prettier'],
+\  'xml': ['prettier', 'xmllint'],
+\  'yaml': ['yamllint'],
 \}
 
 let g:ale_linters = {
-\    'ruby': ['rubocop', 'rufo', 'rails_best_practices'],
+\    'ruby': ['standardrb', 'rubocop', 'rubocop-rails'],
 \    'jsx': ['stylelint', 'eslint'],
 \    'javascript': ['eslint', 'stylelint'],
 \    'typescript': ['eslint'],
-\    'yaml': ['yamllint'],
 \    'scss': ['prettier'],
 \    'sass': ['prettier'],
 \    'css': ['prettier'],
-\    'es6': ['eslint', 'prettier']
+\    'es6': ['eslint', 'prettier'],
+\    'cpp': ['clang-format'],
+\    'c': ['clang-format'],
+\    'json': ['prettier'],
+\    'yaml': ['yamllint'],
+\    'xml': ['prettier', 'xmllint']
 \}
 
 let g:ale_ruby_rubocop_executable =  '/users/ai/.rbenv/shims/rubocop'
+let g:ruby_reek_executable = '/Users/ai/.rbenv/shims/reek'
 let g:ruby_indent_access_modifier_style = 'normal'
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
@@ -188,65 +203,65 @@ let g:doge_doc_standard_ruby = 'YARD'
 highlight! link difftext matchparen
 " command -nargs=* Glg Git log --graph --pretty=format:'%h - (%ad)%d %s <%an>' --abbrev-commit --date=local <args>
 
-let g:gutentags_ctags_exclude = [
-     \ '*.git', '*.svg', '*.hg',
-     \ '*/tests/*',
-     \ 'build',
-     \ 'dist',
-     \ '*sites/*/files/*',
-     \ 'bin',
-     \ 'node_modules',
-     \ 'bower_components',
-     \ 'cache',
-     \ 'compiled',
-     \ 'docs',
-     \ 'example',
-     \ 'bundle',
-     \ 'vendor',
-     \ '*.md',
-     \ '*-lock.json',
-     \ '*.lock',
-     \ '*bundle*.js',
-     \ '*build*.js',
-     \ '.*rc*',
-     \ '*.json',
-     \ '*.min.*',
-     \ '*.map',
-     \ '*.bak',
-     \ '*.zip',
-     \ '*.pyc',
-     \ '*.class',
-     \ '*.sln',
-     \ '*.master',
-     \ '*.csproj',
-     \ '*.tmp',
-     \ '*.csproj.user',
-     \ '*.cache',
-     \ '*.pdb',
-     \ 'tags*',
-     \ 'cscope.*',
-     \ '*.css',
-     \ '*.less',
-     \ '*.scss',
-     \ '*.js',
-     \ '*.coffee',
-     \ 'jsx',
-     \ '*.exe', '*.dll',
-     \ '*.mp3', '*.ogg', '*.flac',
-     \ '*.swp', '*.swo',
-     \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
-     \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
-     \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
-     \ ]
+" let g:gutentags_ctags_exclude = [
+"      \ '*.git', '*.svg', '*.hg',
+"      \ '*/tests/*',
+"      \ 'build',
+"      \ 'dist',
+"      \ '*sites/*/files/*',
+"      \ 'bin',
+"      \ 'node_modules',
+"      \ 'bower_components',
+"      \ 'cache',
+"      \ 'compiled',
+"      \ 'docs',
+"      \ 'example',
+"      \ 'bundle',
+"      \ 'vendor',
+"      \ '*.md',
+"      \ '*-lock.json',
+"      \ '*.lock',
+"      \ '*bundle*.js',
+"      \ '*build*.js',
+"      \ '.*rc*',
+"      \ '*.json',
+"      \ '*.min.*',
+"      \ '*.map',
+"      \ '*.bak',
+"      \ '*.zip',
+"      \ '*.pyc',
+"      \ '*.class',
+"      \ '*.sln',
+"      \ '*.master',
+"      \ '*.csproj',
+"      \ '*.tmp',
+"      \ '*.csproj.user',
+"      \ '*.cache',
+"      \ '*.pdb',
+"      \ 'tags*',
+"      \ 'cscope.*',
+"      \ '*.css',
+"      \ '*.less',
+"      \ '*.scss',
+"      \ '*.js',
+"      \ '*.coffee',
+"      \ 'jsx',
+"      \ '*.exe', '*.dll',
+"      \ '*.mp3', '*.ogg', '*.flac',
+"      \ '*.swp', '*.swo',
+"      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+"      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+"      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+"      \ ]
 
 let test#strategy = "dispatch"
 
 " nmap <silent> [g <plug>(coc-diagnostic-prev)
 " nmap <silent> ]g <plug>(coc-diagnostic-next)
-nmap <silent> gc <plug>(coc-definition)
-nmap <silent> gy <plug>(coc-type-definition)
-nmap <silent> gi <plug>(coc-implementation)
-nmap <silent> gr <plug>(coc-references)
+nmap <silent> gd <plug>(coc-definition)
+" nmap <silent> gy <plug>(coc-type-definition)
+" nmap <silent> gi <plug>(coc-implementation)
+" nmap <silent> gr <plug>(coc-references)
 
 "" Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
@@ -282,11 +297,11 @@ hi CursorColumn ctermfg=gray ctermbg=none
 
 " Add autogroup for tag generation
 
-augroup tagAug
-  autocmd!
-  " If we're working in a git commit (or similar), disable tag file generation
-  autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
-augroup end
+" augroup tagAug
+"   autocmd!
+"   " If we're working in a git commit (or similar), disable tag file generation
+"   autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
+" augroup end
 
 set virtualedit=onemore
 set runtimepath+=~/.vim-plugins/LanguageClient-neovim
@@ -301,7 +316,6 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-let g:netrw_sizestyle= "h"
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -313,9 +327,41 @@ let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always
 call vundle#begin()
 
 Plugin 'aklt/plantuml-syntax'
+Plugin 'Yggdroot/indentLine'
+
+Plugin 'ekalinin/Dockerfile.vim'
+Plugin 'suketa/nvim-dap-ruby'
+Plugin 'mfussenegger/nvim-dap'
+Plugin  'nvim-lua/plenary.nvim'
+Plugin  'nvim-treesitter/nvim-treesitter'
+Plugin 'tree-sitter/tree-sitter-ruby'
+Plugin 'antoinemadec/FixCursorHold.nvim'
+Plugin 'nvim-neotest/neotest'
+Plugin 'nvim-neotest/neotest-vim-test'
+Plugin 'olimorris/neotest-rspec'
+Plugin 'kamykn/spelunker.vim'
+Plugin 'github/copilot.vim'
+
+let g:copilot_no_tab_map = v:true
+imap <silent><script><expr><Right> copilot#Accept("\<CR>")
+imap <silent><Down> <Plug>(copilot-next)
+imap <silent><Up> <Plug>(copilot-previous)
+
+Plugin 'ryanoasis/vim-devicons'
 Plugin 'airblade/vim-localorie'
 Plugin 'moll/vim-bbye' " optional dependency
 Plugin 'aymericbeaumet/vim-symlink'
+Plugin 'PeterRincker/vim-argumentative'
+" nmap <, <Plug>Argumentative_Prev
+" nmap >. <Plug>Argumentative_Next
+" xmap [; <Plug>Argumentative_XPrev
+" xmap ]; <Plug>Argumentative_XNext
+nmap <, <Plug>Argumentative_MoveLeft
+nmap >. <Plug>Argumentative_MoveRight
+" xmap [, <Plug>Argumentative_InnerTextObject
+" xmap ]. <Plug>Argumentative_OuterTextObject
+" omap i; <Plug>Argumentative_OpPendingInnerTextObject
+" omap a; <Plug>Argumentative_OpPendingOuterTextObject
 Plugin 'stefanoverna/vim-i18n'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'kkoomen/vim-doge'
@@ -338,8 +384,8 @@ Plugin 'jremmen/vim-ripgrep'
 Plugin 'rking/ag.vim'
 Plugin 'slim-template/vim-slim.git'
 Plugin 'sheerun/vim-polyglot'
-Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'skywind3000/gutentags_plus'
+" Plugin 'ludovicchabant/vim-gutentags'
+" Plugin 'skywind3000/gutentags_plus'
 Plugin 'scrooloose/vim-slumlord'
 Plugin 'rizzatti/dash.vim'
 
@@ -365,7 +411,6 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-commentary'
 
 Plugin 'Vundlevim/Vundle.vim'
-Plugin 'ludovicchabant/vim-gutentags'
 
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-test/vim-test'
@@ -381,3 +426,68 @@ let g:localorie = {
     \ }
 nnoremap <silent> <leader>ll :call localorie#translate()<CR>
 nnoremap <silent> <leader>lk :echo localorie#expand_key()<CR>
+let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
+let g:rails_projections = {
+      \  'app/*.rb': {
+      \     'alternate': 'spec/{}_spec.rb',
+      \     'type': 'source'
+      \   },
+      \  'spec/engines/*_spec.rb': {
+      \     'alternate': 'app/{}.rb',
+      \     'type': 'test'
+      \   }
+      \}
+" map <Leader>6 :call RunCurrentSpecFile()<CR>
+nmap <leader>6 :lua require("neotest").summary.toggle()<CR>
+nmap <leader>66 :lua require("neotest").summary.close()<CR>
+nmap <leader>y :lua require("neotest").run.run()<CR>
+nmap <leader>yy :lua require("neotest").run.run(vim.fn.expand("%"))<CR>
+map <Leader>7 :call RunNearestSpec()<CR>
+map <Leader>8 :call RunLastSpec()<CR>
+map <Leader>9 :call RunAllSpecs()<CR>
+let g:rspec_command = "Dispatch rspec {spec}"
+
+lua << EOF
+require("neotest").setup({
+	adapters = {
+		require("neotest-rspec"),
+		require("neotest-vim-test")({
+			ignore_file_types = { "python", "vim", "lua", "ruby" },
+		}),
+	},
+})
+  require('dap-ruby').setup()
+EOF
+let g:cursorhold_updatetime = 100
+lua << EOF
+local dap = require('dap')
+dap.adapters.ruby = {
+  type = 'executable';
+  command = 'bundle';
+  args = {'exec', 'readapt', 'stdio'};
+}
+
+dap.configurations.ruby = {
+  {
+    type = 'ruby';
+    request = 'launch';
+    name = 'Rails';
+    program = 'bundle';
+    programArgs = {'exec', 'rails', 's'};
+    useBundler = true;
+  },
+}
+EOF
+let g:rails_projections = {
+      \  'app/*.rb': {
+      \     'alternate': 'spec/{}_spec.rb',
+      \     'type': 'source'
+      \   },
+      \  'spec/*_spec.rb': {
+      \     'alternate': 'app/{}.rb',
+      \     'type': 'test'
+      \   }
+      \}
+autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
