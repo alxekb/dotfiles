@@ -21,6 +21,7 @@ set tags=tags;/
 set laststatus=2
 set cc=120
 set ttyfast
+set lazyredraw
 set completeopt=longest,menuone
 set foldcolumn=1
 set noerrorbells
@@ -29,8 +30,9 @@ set encoding=UTF-8
 set nowrap
 " set timeoutlen=500
 "
-set guifont=DroidSansMono\ Nerd\ Font:h11
+set guifont=DroidSansMono\ Nerd\ Font:h13
 
+let g:ruby_path = '/Users/ai/.rbenv/shims/ruby'
 au BufRead,BufNewFile *.rb setlocal textwidth=120
 au BufNewFile,BufRead *.es6 set filetype=javascript
 au BufNewFile,BufRead *.ts set filetype=javascript
@@ -102,8 +104,8 @@ inoremap <silent> ∆ <Esc>:m .+1<CR>==gi
 vnoremap <silent> ˚ :m '<-2<CR>gv=gv
 vnoremap <silent> ∆ :m '>+1<CR>gv=gv
 
-nnoremap <silent>0  "0p
-nnoremap <silent> <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
+nnoremap <silent> <leader>0  "0p
+" nnoremap <silent> <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
 nnoremap <silent> <leader>1 <esc>:FZF<cr>
 nnoremap <silent> <leader>2 <esc>:Git<cr>
 nnoremap <silent> <leader>3 <esc>:Rg<cr>
@@ -117,7 +119,12 @@ map <silent><space> :tabnew<cr>
 " map <silent><tab> :tabnext<cr>
 " map <silent><s-tab> :tabpr<cr>
 
-let g:coc_global_extensions = [ 'coc-tsserver', 'coc-solargraph' ]
+let g:coc_global_extensions = [
+\  'coc-tabnine',
+\  'coc-tsserver',
+\  'coc-solargraph',
+\  'coc-sourcekit'
+\]
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
 
 let g:ale_lint_on_text_changed = 0
@@ -329,6 +336,8 @@ call vundle#begin()
 Plugin 'aklt/plantuml-syntax'
 Plugin 'Yggdroot/indentLine'
 
+Plugin 'tyru/open-browser.vim'
+Plugin 'iamcco/markdown-preview.nvim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'suketa/nvim-dap-ruby'
 Plugin 'mfussenegger/nvim-dap'
@@ -347,22 +356,22 @@ imap <silent><script><expr><Right> copilot#Accept("\<CR>")
 imap <silent><Down> <Plug>(copilot-next)
 imap <silent><Up> <Plug>(copilot-previous)
 
-Plugin 'ryanoasis/vim-devicons'
-Plugin 'airblade/vim-localorie'
-Plugin 'moll/vim-bbye' " optional dependency
-Plugin 'aymericbeaumet/vim-symlink'
-Plugin 'PeterRincker/vim-argumentative'
+" Plugin 'ryanoasis/vim-devicons'
+" Plugin 'airblade/vim-localorie'
+" Plugin 'moll/vim-bbye' " optional dependency
+" Plugin 'aymericbeaumet/vim-symlink'
+" Plugin 'PeterRincker/vim-argumentative'
 " nmap <, <Plug>Argumentative_Prev
 " nmap >. <Plug>Argumentative_Next
 " xmap [; <Plug>Argumentative_XPrev
 " xmap ]; <Plug>Argumentative_XNext
-nmap <, <Plug>Argumentative_MoveLeft
-nmap >. <Plug>Argumentative_MoveRight
+" nmap <, <Plug>Argumentative_MoveLeft
+" nmap >. <Plug>Argumentative_MoveRight
 " xmap [, <Plug>Argumentative_InnerTextObject
 " xmap ]. <Plug>Argumentative_OuterTextObject
 " omap i; <Plug>Argumentative_OpPendingInnerTextObject
 " omap a; <Plug>Argumentative_OpPendingOuterTextObject
-Plugin 'stefanoverna/vim-i18n'
+" Plugin 'stefanoverna/vim-i18n'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'kkoomen/vim-doge'
 Plugin 'skywind3000/vim-preview'
@@ -378,7 +387,7 @@ Plugin 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
 
-Plugin 'jiangmiao/auto-pairs'
+" Plugin 'jiangmiao/auto-pairs'
 Plugin 'jparise/vim-graphql'
 Plugin 'jremmen/vim-ripgrep'
 Plugin 'rking/ag.vim'
@@ -402,7 +411,7 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-haml'
+" Plugin 'tpope/vim-haml'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-fugitive'
@@ -447,6 +456,7 @@ map <Leader>8 :call RunLastSpec()<CR>
 map <Leader>9 :call RunAllSpecs()<CR>
 let g:rspec_command = "Dispatch rspec {spec}"
 
+let g:cursorhold_updatetime = 100
 lua << EOF
 require("neotest").setup({
 	adapters = {
@@ -457,9 +467,6 @@ require("neotest").setup({
 	},
 })
   require('dap-ruby').setup()
-EOF
-let g:cursorhold_updatetime = 100
-lua << EOF
 local dap = require('dap')
 dap.adapters.ruby = {
   type = 'executable';
@@ -490,4 +497,3 @@ let g:rails_projections = {
       \}
 autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
