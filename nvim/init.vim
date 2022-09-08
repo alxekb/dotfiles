@@ -2,7 +2,6 @@ set nocompatible              " be iMproved, required
 
 " set runtimepath+=~/.vim,~/.vim/after
 " set packpath+=~/.vim
-" source ~/.vimrc
 set background=light
 set number
 set scrolloff=9
@@ -14,7 +13,6 @@ set foldmethod=syntax
 set nofoldenable
 set expandtab tabstop=2 shiftwidth=2 softtabstop=2
 set cursorline
-" set complete+=kspell
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.vim/bundle/vundle.vim
 set tags=tags;/
@@ -27,10 +25,10 @@ set foldcolumn=1
 set noerrorbells
 set novisualbell
 set encoding=UTF-8
-set nowrap
-" set timeoutlen=500
-"
 set guifont=DroidSansMono\ Nerd\ Font:h13
+set virtualedit=onemore
+set runtimepath+=~/.vim-plugins/LanguageClient-neovim
+
 
 let g:ruby_path = '/Users/ai/.rbenv/shims/ruby'
 au BufRead,BufNewFile *.rb setlocal textwidth=120
@@ -46,7 +44,7 @@ augroup netrw_mapping
   autocmd filetype netrw call NetrwMapping()
 augroup END
 
-filetype plugin indent on
+" filetype plugin indent on
 
 let g:netrw_banner = 0
 let g:netrw_keepdir = 1
@@ -123,6 +121,7 @@ let g:coc_global_extensions = [
 \  'coc-tabnine',
 \  'coc-tsserver',
 \  'coc-solargraph',
+\  'coc-css',
 \  'coc-sourcekit'
 \]
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
@@ -182,22 +181,28 @@ let g:ale_fixers = {
 \  'json': ['prettier'],
 \  'xml': ['prettier', 'xmllint'],
 \  'yaml': ['yamllint'],
+\  'swift': ['swiftformat', 'swiftlint'],
+\  'h': ['cpplint'],
+\  'm': ['swiftlint'],
 \}
 
 let g:ale_linters = {
-\    'ruby': ['standardrb', 'rubocop', 'rubocop-rails'],
-\    'jsx': ['stylelint', 'eslint'],
-\    'javascript': ['eslint', 'stylelint'],
-\    'typescript': ['eslint'],
-\    'scss': ['prettier'],
-\    'sass': ['prettier'],
-\    'css': ['prettier'],
-\    'es6': ['eslint', 'prettier'],
-\    'cpp': ['clang-format'],
-\    'c': ['clang-format'],
-\    'json': ['prettier'],
-\    'yaml': ['yamllint'],
-\    'xml': ['prettier', 'xmllint']
+\  'ruby': ['standardrb', 'rubocop', 'rubocop-rails'],
+\  'jsx': ['stylelint', 'eslint'],
+\  'javascript': ['eslint', 'stylelint'],
+\  'typescript': ['eslint'],
+\  'scss': ['prettier'],
+\  'sass': ['prettier'],
+\  'css': ['prettier'],
+\  'es6': ['eslint', 'prettier'],
+\  'cpp': ['clang-format'],
+\  'c': ['clang-format'],
+\  'json': ['prettier'],
+\  'yaml': ['yamllint'],
+\  'xml': ['prettier', 'xmllint'],
+\  'swift': ['swiftformat', 'swiftlint'],
+\  'h': ['cpplint'],
+\  'm': ['swiftlint'],
 \}
 
 let g:ale_ruby_rubocop_executable =  '/users/ai/.rbenv/shims/rubocop'
@@ -208,58 +213,6 @@ let g:ruby_indent_block_style = 'do'
 let g:doge_doc_standard_ruby = 'YARD'
 
 highlight! link difftext matchparen
-" command -nargs=* Glg Git log --graph --pretty=format:'%h - (%ad)%d %s <%an>' --abbrev-commit --date=local <args>
-
-" let g:gutentags_ctags_exclude = [
-"      \ '*.git', '*.svg', '*.hg',
-"      \ '*/tests/*',
-"      \ 'build',
-"      \ 'dist',
-"      \ '*sites/*/files/*',
-"      \ 'bin',
-"      \ 'node_modules',
-"      \ 'bower_components',
-"      \ 'cache',
-"      \ 'compiled',
-"      \ 'docs',
-"      \ 'example',
-"      \ 'bundle',
-"      \ 'vendor',
-"      \ '*.md',
-"      \ '*-lock.json',
-"      \ '*.lock',
-"      \ '*bundle*.js',
-"      \ '*build*.js',
-"      \ '.*rc*',
-"      \ '*.json',
-"      \ '*.min.*',
-"      \ '*.map',
-"      \ '*.bak',
-"      \ '*.zip',
-"      \ '*.pyc',
-"      \ '*.class',
-"      \ '*.sln',
-"      \ '*.master',
-"      \ '*.csproj',
-"      \ '*.tmp',
-"      \ '*.csproj.user',
-"      \ '*.cache',
-"      \ '*.pdb',
-"      \ 'tags*',
-"      \ 'cscope.*',
-"      \ '*.css',
-"      \ '*.less',
-"      \ '*.scss',
-"      \ '*.js',
-"      \ '*.coffee',
-"      \ 'jsx',
-"      \ '*.exe', '*.dll',
-"      \ '*.mp3', '*.ogg', '*.flac',
-"      \ '*.swp', '*.swo',
-"      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
-"      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
-"      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
-"      \ ]
 
 let test#strategy = "dispatch"
 
@@ -310,9 +263,6 @@ hi CursorColumn ctermfg=gray ctermbg=none
 "   autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
 " augroup end
 
-set virtualedit=onemore
-set runtimepath+=~/.vim-plugins/LanguageClient-neovim
-
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
@@ -334,7 +284,7 @@ let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always
 call vundle#begin()
 
 Plugin 'aklt/plantuml-syntax'
-Plugin 'Yggdroot/indentLine'
+" Plugin 'Yggdroot/indentLine'
 
 Plugin 'tyru/open-browser.vim'
 Plugin 'iamcco/markdown-preview.nvim'
@@ -373,7 +323,7 @@ imap <silent><Up> <Plug>(copilot-previous)
 " omap a; <Plug>Argumentative_OpPendingOuterTextObject
 " Plugin 'stefanoverna/vim-i18n'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'kkoomen/vim-doge'
+" Plugin 'kkoomen/vim-doge'
 Plugin 'skywind3000/vim-preview'
 Plugin 'ap/vim-css-color'
 Plugin 'alvan/vim-closetag'
@@ -383,12 +333,11 @@ Plugin 'ecomba/vim-ruby-refactoring'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'fatih/vim-go'
 Plugin 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
-
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
 
 " Plugin 'jiangmiao/auto-pairs'
-Plugin 'jparise/vim-graphql'
+" Plugin 'jparise/vim-graphql'
 Plugin 'jremmen/vim-ripgrep'
 Plugin 'rking/ag.vim'
 Plugin 'slim-template/vim-slim.git'
@@ -425,16 +374,16 @@ Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-test/vim-test'
 Plugin 'w0rp/ale'
 
-Plugin 'rakr/vim-colors-rakr'
+" Plugin 'rakr/vim-colors-rakr'
 Plugin 'neovim/nvim-lspconfig'
 
 call vundle#end()            " required
-let g:localorie = {
-    \ 'quickfix':  0,
-    \ 'switch':    1
-    \ }
-nnoremap <silent> <leader>ll :call localorie#translate()<CR>
-nnoremap <silent> <leader>lk :echo localorie#expand_key()<CR>
+" let g:localorie = {
+"     \ 'quickfix':  0,
+"     \ 'switch':    1
+"     \ }
+" nnoremap <silent> <leader>ll :call localorie#translate()<CR>
+" nnoremap <silent> <leader>lk :echo localorie#expand_key()<CR>
 let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
 let g:rails_projections = {
       \  'app/*.rb': {
@@ -497,3 +446,6 @@ let g:rails_projections = {
       \}
 autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<TAB>"
+highlight CocErrorFloat ctermfg=none
+hi CursorColumn ctermfg=none
