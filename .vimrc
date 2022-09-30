@@ -1,6 +1,6 @@
 set nocompatible              " be iMproved, required
 set number
-set spell
+set nospell
 set scrolloff=7
 set clipboard=unnamed
 set backspace=indent,eol,start

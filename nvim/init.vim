@@ -61,7 +61,7 @@ let g:AutoPairsFlyMode = 1
 let g:AutoPairs = {'<%':'%>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
 nnoremap <silent> <leader>c :Dispatch
-nnoremap <silent> <leader>rr :Dispatch rubocop -A %<CR>
+nnoremap <silent> <leader>rr :Dispatch rubocop --safe-auto-correct %<CR>
 nnoremap <silent> <leader>tt :Dispatch RAILS_ENV=test rails rswag SWAGGER_DRY_RUN=0<CR>
 nnoremap <silent> <leader>dd :Vexplore $PWD<CR>
 nnoremap <silent> <leader>df :Vexplore %:~:h<CR>
