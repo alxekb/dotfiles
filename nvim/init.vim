@@ -11,7 +11,7 @@ set hlsearch
 set cursorcolumn
 set foldmethod=syntax
 " set syntax=off
-set syntax=on
+" set syntax=on
 set nofoldenable
 set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab
 set cursorline
@@ -32,7 +32,7 @@ set virtualedit=onemore
 set runtimepath+=~/.vim-plugins/LanguageClient-neovim
 
 
-let g:ruby_path = '/Users/ai/.rbenv/shims/ruby'
+let g:ruby_path = '/Users/ai/.asdf/shims/ruby'
 au BufRead,BufNewFile *.rb setlocal textwidth=120
 au BufNewFile,BufRead *.es6 set filetype=javascript
 au BufNewFile,BufRead *.ts set filetype=javascript
@@ -63,7 +63,7 @@ let g:AutoPairsFlyMode = 1
 let g:AutoPairs = {'<%':'%>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
 nnoremap <silent> <leader>c :Dispatch
-nnoremap <silent> <leader>rr :Dispatch rubocop --safe-auto-correct %<CR>
+nnoremap <silent> <leader>rr :Dispatch rubocop -A %<CR>
 nnoremap <silent> <leader>tt :Dispatch RAILS_ENV=test rails rswag SWAGGER_DRY_RUN=0<CR>
 nnoremap <silent> <leader>dd :Vexplore $PWD<CR>
 nnoremap <silent> <leader>df :Vexplore %:~:h<CR>
@@ -115,7 +115,7 @@ nnoremap <silent> <leader>5 <esc>:Commits<cr>
 nmap <silent> <leader>d :DashWord<cr>
 nmap <silent> <leader>af :ALEFix<cr>
 nmap <silent> <leader>n :ALENext<cr>
-map <silent><space> :tabnew<cr>
+nmap <silent><leader><space> :tabnew<cr>
 " map <silent><tab> :tabnext<cr>
 " map <silent><s-tab> :tabpr<cr>
 
@@ -177,7 +177,7 @@ let g:ale_fixers = {
 \  'css': ['prettier'],
 \  'scss': ['prettier'],
 \  'sass': ['prettier'],
-\  'coffee': ['coffelint'],
+\  'coffee': ['coffeelint'],
 \  'c': ['clang-format'],
 \  'cpp': ['clang-format'],
 \  'json': ['prettier'],
@@ -205,10 +205,11 @@ let g:ale_linters = {
 \  'swift': ['swiftformat', 'swiftlint'],
 \  'h': ['cpplint'],
 \  'm': ['swiftlint'],
+\  'coffee': ['coffeelint'],
 \}
 
-let g:ale_ruby_rubocop_executable =  '/users/ai/.rbenv/shims/rubocop'
-let g:ruby_reek_executable = '/Users/ai/.rbenv/shims/reek'
+let g:ale_ruby_rubocop_executable =  '/users/ai/.asdf/shims/rubocop'
+let g:ruby_reek_executable = '/Users/ai/.asdf/shims/reek'
 let g:ruby_indent_access_modifier_style = 'normal'
 let g:ruby_indent_assignment_style = 'variable'
 let g:ruby_indent_block_style = 'do'
@@ -226,8 +227,8 @@ nmap <silent> gd <plug>(coc-definition)
 " nmap <silent> gr <plug>(coc-references)
 
 "" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-nmap <leader>re :RExtractMethod<cr>
+" nmap <leader>rn <Plug>(coc-rename)
+" nmap <leader>re :RExtractMethod<cr>
 
 "" Applying codeAction to the selected region.
 "" Example: `<leader>aap` for current paragraph
@@ -246,7 +247,7 @@ let g:LanguageClient_serverCommands = {
     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
     \ 'python': ['/usr/local/bin/pyls'],
-    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ 'ruby': ['~/.asdf/shims/solargraph', 'stdio'],
     \ }
 nmap <F5> <Plug>(lcn-menu)
 " Or map each action separately
@@ -265,11 +266,11 @@ hi CursorColumn ctermfg=gray ctermbg=none
 "   autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
 " augroup end
 
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -295,6 +296,22 @@ Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'suketa/nvim-dap-ruby'
 Plugin 'mfussenegger/nvim-dap'
 Plugin  'nvim-lua/plenary.nvim'
+Plugin 'ThePrimeagen/harpoon'
+nmap <leader>h <cmd>lua require'harpoon.ui'.toggle_quick_menu()<cr>
+nmap <leader>hh <cmd>lua require'harpoon.mark'.add_file()<cr>
+
+nmap <leader>oo <cmd>lua require'harpoon.ui'.nav_next()<cr>
+nmap <leader>nn <cmd>lua require'harpoon.ui'.nav_next()<cr>
+
+nmap <leader>pp <cmd>lua require'harpoon.ui'.nav_prev()<cr>
+
+nmap <leader>h1 <cmd>lua require'harpoon.ui'.nav_file(1)<cr>
+nmap <leader>h2 <cmd>lua require'harpoon.ui'.nav_file(2)<cr>
+nmap <leader>h3 <cmd>lua require'harpoon.ui'.nav_file(3)<cr>
+nmap <leader>h4 <cmd>lua require'harpoon.ui'.nav_file(4)<cr>
+nmap <leader>h5 <cmd>lua require'harpoon.ui'.nav_file(5)<cr>
+
+nmap <leader>ht <cmd>Telescope harpoon marks<cr>
 Plugin  'nvim-treesitter/nvim-treesitter'
 Plugin 'tree-sitter/tree-sitter-ruby'
 Plugin 'antoinemadec/FixCursorHold.nvim'
@@ -328,7 +345,7 @@ imap <silent><Up> <Plug>(copilot-previous)
 Plugin 'airblade/vim-gitgutter'
 " Plugin 'kkoomen/vim-doge'
 Plugin 'skywind3000/vim-preview'
-Plugin 'ap/vim-css-color'
+" Plugin 'ap/vim-css-color'
 Plugin 'alvan/vim-closetag'
 Plugin 'adelarsq/vim-matchit'
 Plugin 'alxekb/vim-tags'
@@ -377,7 +394,6 @@ Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-test/vim-test'
 Plugin 'w0rp/ale'
 
-" Plugin 'rakr/vim-colors-rakr'
 Plugin 'neovim/nvim-lspconfig'
 Plugin 'nvim-telescope/telescope.nvim'
 Plugin 'mrjones2014/dash.nvim'
@@ -411,16 +427,21 @@ map <Leader>9 :call RunAllSpecs()<CR>
 let g:rspec_command = "Dispatch rspec {spec}"
 
 let g:cursorhold_updatetime = 100
+
 lua << EOF
-require("neotest").setup({
-	adapters = {
-		require("neotest-rspec"),
-		require("neotest-vim-test")({
-			ignore_file_types = { "python", "vim", "lua", "ruby" },
-		}),
-	},
-})
-  require('dap-ruby').setup()
+function map(mode, shortcut, command)
+  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
+end
+
+function nmap(shortcut, command)
+  map('n', shortcut, command)
+end
+
+function imap(shortcut, command)
+  map('i', shortcut, command)
+end
+
+require('dap-ruby').setup()
 local dap = require('dap')
 dap.adapters.ruby = {
   type = 'executable';
@@ -428,6 +449,18 @@ dap.adapters.ruby = {
   args = {'exec', 'readapt', 'stdio'};
 }
 
+require("neotest").setup({
+	adapters = {
+    require("neotest-rspec")({
+      rspec_cmd = function()
+        return vim.tbl_flatten({"bundle", "exec", "rspec"})
+      end
+    }),
+		require("neotest-vim-test")({
+			ignore_file_types = { "python", "vim", "lua", "ruby" },
+		}),
+	},
+})
 dap.configurations.ruby = {
   {
     type = 'ruby';
@@ -452,24 +485,28 @@ let g:rails_projections = {
 autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<TAB>"
+inoremap <nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1, 1)\<cr>" : "\<Right>"
+inoremap <nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0, -1)\<cr>" : "\<Left>"
 highlight CocErrorFloat ctermfg=none
 hi CursorColumn ctermfg=none
-" file is large from 10mb
-let g:LargeFile = 1024 * 1024 * 10
+
+let g:LargeFile = 1024 * 1024
 augroup LargeFile
   au!
   autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
 augroup END
 
 function! LargeFile()
- " no syntax highlighting etc
  set eventignore+=FileType
- " save memory when other file is viewed
+ set syntax=off
  setlocal bufhidden=unload
- " is read-only (write with :w new_filename)
  setlocal buftype=nowrite
- " no undo possible
  setlocal undolevels=-1
- " display message
  autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed (see .vimrc for details)."
 endfunction
+nmap <silent><leader>hc :lua require("harpoon").get_mark_config().marks = {}  <cr>
+nmap <silent><Tab> :lua require("harpoon.ui").nav_next()<cr>
+nmap <silent><S-Tab> :lua require("harpoon.ui").nav_prev()<cr>
+nmap <silent>1 :lua require("harpoon.ui").nav_file(1)<cr>
+nmap <silent>2 :lua require("harpoon.ui").nav_file(2)<cr>
+nmap <silent>3 :lua require("harpoon.ui").nav_file(3)<cr>
