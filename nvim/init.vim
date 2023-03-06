@@ -10,8 +10,10 @@ set backspace=indent,eol,start
 set hlsearch
 set cursorcolumn
 set foldmethod=syntax
+" set syntax=off
+set syntax=on
 set nofoldenable
-set expandtab tabstop=2 shiftwidth=2 softtabstop=2
+set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab
 set cursorline
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.vim/bundle/vundle.vim
@@ -110,7 +112,7 @@ nnoremap <silent> <leader>3 <esc>:Rg<cr>
 nnoremap <silent> <leader>4 <esc>:Buffers<cr>
 nnoremap <silent> <leader>5 <esc>:Commits<cr>
 
-nmap <silent> <leader>d <Plug>DashSearch
+nmap <silent> <leader>d :DashWord<cr>
 nmap <silent> <leader>af :ALEFix<cr>
 nmap <silent> <leader>n :ALENext<cr>
 map <silent><space> :tabnew<cr>
@@ -283,6 +285,7 @@ let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always
 
 call vundle#begin()
 
+
 Plugin 'aklt/plantuml-syntax'
 " Plugin 'Yggdroot/indentLine'
 
@@ -345,7 +348,7 @@ Plugin 'sheerun/vim-polyglot'
 " Plugin 'ludovicchabant/vim-gutentags'
 " Plugin 'skywind3000/gutentags_plus'
 Plugin 'scrooloose/vim-slumlord'
-Plugin 'rizzatti/dash.vim'
+" Plugin 'rizzatti/dash.vim'
 
 Plugin 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
@@ -376,6 +379,8 @@ Plugin 'w0rp/ale'
 
 " Plugin 'rakr/vim-colors-rakr'
 Plugin 'neovim/nvim-lspconfig'
+Plugin 'nvim-telescope/telescope.nvim'
+Plugin 'mrjones2014/dash.nvim'
 
 call vundle#end()            " required
 " let g:localorie = {
@@ -449,3 +454,22 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<TAB>"
 highlight CocErrorFloat ctermfg=none
 hi CursorColumn ctermfg=none
+" file is large from 10mb
+let g:LargeFile = 1024 * 1024 * 10
+augroup LargeFile
+  au!
+  autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
+augroup END
+
+function! LargeFile()
+ " no syntax highlighting etc
+ set eventignore+=FileType
+ " save memory when other file is viewed
+ setlocal bufhidden=unload
+ " is read-only (write with :w new_filename)
+ setlocal buftype=nowrite
+ " no undo possible
+ setlocal undolevels=-1
+ " display message
+ autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed (see .vimrc for details)."
+endfunction
