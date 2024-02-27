@@ -10,8 +10,6 @@ set backspace=indent,eol,start
 set hlsearch
 set cursorcolumn
 set foldmethod=syntax
-" set syntax=off
-" set syntax=on
 set nofoldenable
 set expandtab tabstop=2 shiftwidth=2 softtabstop=2 smarttab
 set cursorline
@@ -21,7 +19,6 @@ set tags=tags;/
 set laststatus=2
 set cc=120
 set ttyfast
-set lazyredraw
 set completeopt=longest,menuone
 set foldcolumn=1
 set noerrorbells
@@ -31,11 +28,10 @@ set guifont=DroidSansMono\ Nerd\ Font:h13
 set virtualedit=onemore
 set runtimepath+=~/.vim-plugins/LanguageClient-neovim
 
-
 let g:ruby_path = '/Users/ai/.asdf/shims/ruby'
+
 au BufRead,BufNewFile *.rb setlocal textwidth=120
 au BufNewFile,BufRead *.es6 set filetype=javascript
-au BufNewFile,BufRead *.ts set filetype=javascript
 autocmd bufread,bufnewfile *.md,*.rb setlocal spell
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -50,7 +46,7 @@ augroup END
 
 let g:netrw_banner = 0
 let g:netrw_keepdir = 1
-map <leader>e :40vs <C-R>=expand("%:p:h") . "/" <cr><cr>"/" expand("%:t")<cr>
+nmap <leader>e :vs %:h <cr>
 
 let g:netrw_preview   = 1
 let g:netrw_liststyle = 3
@@ -60,13 +56,14 @@ let g:netrw_sizestyle= "h"
 
 let g:AutoPairsShortcutFastWrap = '<M-e>'
 let g:AutoPairsFlyMode = 1
-let g:AutoPairs = {'<%':'%>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
+let g:AutoPairs = {'<':'>', '<%':'%>', '(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
 nnoremap <silent> <leader>c :Dispatch
 nnoremap <silent> <leader>rr :Dispatch rubocop -A %<CR>
 nnoremap <silent> <leader>tt :Dispatch RAILS_ENV=test rails rswag SWAGGER_DRY_RUN=0<CR>
 nnoremap <silent> <leader>dd :Vexplore $PWD<CR>
 nnoremap <silent> <leader>df :Vexplore %:~:h<CR>
+nnoremap <silent> <leader>ff :vs %:<CR>
 nnoremap <silent> <leader>t  :Lexplore %:~:h<CR>
 nnoremap <silent> <leader>s :vsplit <C-R>=expand("%:p:h")<CR><CR>
 " nnoremap <leader>t :if expand("%:p:h") != "" \| exec "!" expand("%:p:h:S") \| endif<CR>
@@ -108,6 +105,7 @@ nnoremap <silent> <leader>0  "0p
 " nnoremap <silent> <leader>0 :Git log --since=midnight --pretty=format:"%s" <cr>
 nnoremap <silent> <leader>1 <esc>:FZF<cr>
 nnoremap <silent> <leader>2 <esc>:Git<cr>
+nnoremap <silent> <leader>22 <esc>:BCommits<cr>
 nnoremap <silent> <leader>3 <esc>:Rg<cr>
 nnoremap <silent> <leader>4 <esc>:Buffers<cr>
 nnoremap <silent> <leader>5 <esc>:Commits<cr>
@@ -116,17 +114,14 @@ nmap <silent> <leader>d :DashWord<cr>
 nmap <silent> <leader>af :ALEFix<cr>
 nmap <silent> <leader>n :ALENext<cr>
 nmap <silent><leader><space> :tabnew<cr>
-" map <silent><tab> :tabnext<cr>
-" map <silent><s-tab> :tabpr<cr>
 
 let g:coc_global_extensions = [
-\  'coc-tabnine',
 \  'coc-tsserver',
 \  'coc-solargraph',
 \  'coc-css',
 \  'coc-sourcekit'
 \]
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6'
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx,*.js,*.tsx,*.md,*.es6,*.tsx'
 
 let g:ale_lint_on_text_changed = 0
 let g:ale_lint_on_save = 1
@@ -135,21 +130,6 @@ let g:ale_linters_explicit = 1
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_list_window_size = 5
-
-
-" config project root markers.
-" let g:gutentags_modules = ['ctags', 'gtags_cscope']
-" let g:gutentags_define_advanced_commands = 1
-" let g:gutentags_project_root = ['.root']
-" " let g:gutentags_auto_add_gtags_cscope = 1
-" let g:gutentags_add_default_project_roots = 1
-" let g:gutentags_project_root = ['package.json', '.git']
-" let g:gutentags_generate_on_new = 1
-" let g:gutentags_generate_on_missing = 1
-" let g:gutentags_generate_on_write = 1
-" let g:gutentags_generate_on_empty_buffer = 0
-" let g:gutentags_cache_dir = expand('~/.cache/tags')
-" let g:gutentags_plus_switch = 1
 
 let g:fzf_preview_window = ['up:60%', 'ctrl-/']
 let g:fzf_buffers_jump = 1
@@ -167,13 +147,18 @@ let g:rg_highlight = 1
 " let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
 " let g:ale_linters = {'jsx': ['stylelint', 'eslint']}
 let g:ale_fixers = {
+\  'haml': ['haml-lint'],
+\  'hamlc': ['haml-lint'],
 \  'ruby': [
 \    'remove_trailing_lines',
 \    'trim_whitespace',
 \    'rubocop',
 \  ],
+\  'erb': ['rubocop', 'erblint'],
 \  'javascript': ['prettier'],
+\  'ts': ['tslint'],
 \  'jsx': ['stylelint', 'eslint'],
+\  'tsx': ['stylelint', 'eslint'],
 \  'css': ['prettier'],
 \  'scss': ['prettier'],
 \  'sass': ['prettier'],
@@ -189,8 +174,12 @@ let g:ale_fixers = {
 \}
 
 let g:ale_linters = {
+\  'erb': ['rubocop', 'erblint'],
+\  'haml': ['haml-lint'],
+\  'hamlc': ['haml-lint'],
 \  'ruby': ['standardrb', 'rubocop', 'rubocop-rails'],
 \  'jsx': ['stylelint', 'eslint'],
+\  'tsx': ['eslint'],
 \  'javascript': ['eslint', 'stylelint'],
 \  'typescript': ['eslint'],
 \  'scss': ['prettier'],
@@ -206,6 +195,7 @@ let g:ale_linters = {
 \  'h': ['cpplint'],
 \  'm': ['swiftlint'],
 \  'coffee': ['coffeelint'],
+\  'ts': ['tslint'],
 \}
 
 let g:ale_ruby_rubocop_executable =  '/users/ai/.asdf/shims/rubocop'
@@ -223,22 +213,21 @@ let test#strategy = "dispatch"
 " nmap <silent> ]g <plug>(coc-diagnostic-next)
 nmap <silent> gd <plug>(coc-definition)
 " nmap <silent> gy <plug>(coc-type-definition)
-" nmap <silent> gi <plug>(coc-implementation)
-" nmap <silent> gr <plug>(coc-references)
+nmap <silent> gi <plug>(coc-implementation)
+nmap <silent> gr <plug>(coc-references)
 
 "" Symbol renaming.
 " nmap <leader>rn <Plug>(coc-rename)
 " nmap <leader>re :RExtractMethod<cr>
 
 "" Applying codeAction to the selected region.
-"" Example: `<leader>aap` for current paragraph
 xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>ac  <Plug>(coc-codeaction)
 nmap <leader>qf  <Plug>(coc-fix-current)
 nmap ]h <Plug>(GitGutterNextHunk)
 nmap [h <Plug>(GitGutterPrevHunk)
-"command! Gqf GitGutterQuickFix | copen
+
 highlight link GitGutterChangeLine DiffText
 
 let g:LanguageClient_autoStop = 1
@@ -253,24 +242,7 @@ nmap <F5> <Plug>(lcn-menu)
 " Or map each action separately
 nmap <silent>K <Plug>(lcn-hover)
 
-
 hi CursorColumn ctermfg=gray ctermbg=none
-" hi CursorColumn ctermfg=white ctermbg=none
-" hi CursorColumn ctermfg=black ctermbg=none
-
-" Add autogroup for tag generation
-
-" augroup tagAug
-"   autocmd!
-"   " If we're working in a git commit (or similar), disable tag file generation
-"   autocmd FileType git,gitcommit,gitrebase,gitsendemail :let g:gutentags_enabled=0
-" augroup end
-
-" inoremap <silent><expr> <TAB>
-"       \ pumvisible() ? "\<>" :
-"       \ <SID>check_back_space() ? "\<TAB>" :
-"       \ coc#refresh()
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -286,9 +258,9 @@ let $FZF_PREVIEW_COMMAND="COLORTERM=truecolor bat --style=numbers --color=always
 
 call vundle#begin()
 
+Plugin  'sheerun/vim-polyglot'
 
 Plugin 'aklt/plantuml-syntax'
-" Plugin 'Yggdroot/indentLine'
 
 Plugin 'tyru/open-browser.vim'
 Plugin 'iamcco/markdown-preview.nvim'
@@ -298,21 +270,12 @@ Plugin 'mfussenegger/nvim-dap'
 Plugin  'nvim-lua/plenary.nvim'
 Plugin 'ThePrimeagen/harpoon'
 nmap <leader>h <cmd>lua require'harpoon.ui'.toggle_quick_menu()<cr>
-nmap <leader>hh <cmd>lua require'harpoon.mark'.add_file()<cr>
+nmap <leader>hh <cmd>Telescope harpoon marks<cr>
+nmap <leader>7 <cmd>Telescope harpoon marks<cr>
+nmap <leader>u <cmd>lua require'harpoon.mark'.add_file()<cr>
 
-nmap <leader>oo <cmd>lua require'harpoon.ui'.nav_next()<cr>
-nmap <leader>nn <cmd>lua require'harpoon.ui'.nav_next()<cr>
-
-nmap <leader>pp <cmd>lua require'harpoon.ui'.nav_prev()<cr>
-
-nmap <leader>h1 <cmd>lua require'harpoon.ui'.nav_file(1)<cr>
-nmap <leader>h2 <cmd>lua require'harpoon.ui'.nav_file(2)<cr>
-nmap <leader>h3 <cmd>lua require'harpoon.ui'.nav_file(3)<cr>
-nmap <leader>h4 <cmd>lua require'harpoon.ui'.nav_file(4)<cr>
-nmap <leader>h5 <cmd>lua require'harpoon.ui'.nav_file(5)<cr>
-
-nmap <leader>ht <cmd>Telescope harpoon marks<cr>
-Plugin  'nvim-treesitter/nvim-treesitter'
+Plugin 'nvim-treesitter/nvim-treesitter'
+Plugin 'tree-sitter/tree-sitter-typescript'
 Plugin 'tree-sitter/tree-sitter-ruby'
 Plugin 'antoinemadec/FixCursorHold.nvim'
 Plugin 'nvim-neotest/neotest'
@@ -326,26 +289,8 @@ imap <silent><script><expr><Right> copilot#Accept("\<CR>")
 imap <silent><Down> <Plug>(copilot-next)
 imap <silent><Up> <Plug>(copilot-previous)
 
-" Plugin 'ryanoasis/vim-devicons'
-" Plugin 'airblade/vim-localorie'
-" Plugin 'moll/vim-bbye' " optional dependency
-" Plugin 'aymericbeaumet/vim-symlink'
-" Plugin 'PeterRincker/vim-argumentative'
-" nmap <, <Plug>Argumentative_Prev
-" nmap >. <Plug>Argumentative_Next
-" xmap [; <Plug>Argumentative_XPrev
-" xmap ]; <Plug>Argumentative_XNext
-" nmap <, <Plug>Argumentative_MoveLeft
-" nmap >. <Plug>Argumentative_MoveRight
-" xmap [, <Plug>Argumentative_InnerTextObject
-" xmap ]. <Plug>Argumentative_OuterTextObject
-" omap i; <Plug>Argumentative_OpPendingInnerTextObject
-" omap a; <Plug>Argumentative_OpPendingOuterTextObject
-" Plugin 'stefanoverna/vim-i18n'
 Plugin 'airblade/vim-gitgutter'
-" Plugin 'kkoomen/vim-doge'
 Plugin 'skywind3000/vim-preview'
-" Plugin 'ap/vim-css-color'
 Plugin 'alvan/vim-closetag'
 Plugin 'adelarsq/vim-matchit'
 Plugin 'alxekb/vim-tags'
@@ -356,33 +301,25 @@ Plugin 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'junegunn/fzf.vim'
 
-" Plugin 'jiangmiao/auto-pairs'
-" Plugin 'jparise/vim-graphql'
 Plugin 'jremmen/vim-ripgrep'
 Plugin 'rking/ag.vim'
-Plugin 'slim-template/vim-slim.git'
-Plugin 'sheerun/vim-polyglot'
-" Plugin 'ludovicchabant/vim-gutentags'
-" Plugin 'skywind3000/gutentags_plus'
 Plugin 'scrooloose/vim-slumlord'
-" Plugin 'rizzatti/dash.vim'
 
 Plugin 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
-Plugin 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+" Plugin 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 
 Plugin 'weirongxu/plantuml-previewer.vim'
 
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'itchyny/vim-cursorword'
-Plugin 'thoughtbot/vim-rspec'
 
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-endwise'
-" Plugin 'tpope/vim-haml'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-dispatch'
+Plugin 'Raimondi/delimitMate'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
@@ -391,7 +328,7 @@ Plugin 'tpope/vim-commentary'
 Plugin 'Vundlevim/Vundle.vim'
 
 Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-test/vim-test'
+
 Plugin 'w0rp/ale'
 
 Plugin 'neovim/nvim-lspconfig'
@@ -399,12 +336,6 @@ Plugin 'nvim-telescope/telescope.nvim'
 Plugin 'mrjones2014/dash.nvim'
 
 call vundle#end()            " required
-" let g:localorie = {
-"     \ 'quickfix':  0,
-"     \ 'switch':    1
-"     \ }
-" nnoremap <silent> <leader>ll :call localorie#translate()<CR>
-" nnoremap <silent> <leader>lk :echo localorie#expand_key()<CR>
 let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
 let g:rails_projections = {
       \  'app/*.rb': {
@@ -421,9 +352,7 @@ nmap <leader>6 :lua require("neotest").summary.toggle()<CR>
 nmap <leader>66 :lua require("neotest").summary.close()<CR>
 nmap <leader>y :lua require("neotest").run.run()<CR>
 nmap <leader>yy :lua require("neotest").run.run(vim.fn.expand("%"))<CR>
-map <Leader>7 :call RunNearestSpec()<CR>
-map <Leader>8 :call RunLastSpec()<CR>
-map <Leader>9 :call RunAllSpecs()<CR>
+
 let g:rspec_command = "Dispatch rspec {spec}"
 
 let g:cursorhold_updatetime = 100
@@ -490,7 +419,7 @@ inoremap <nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(
 highlight CocErrorFloat ctermfg=none
 hi CursorColumn ctermfg=none
 
-let g:LargeFile = 1024 * 1024
+let g:LargeFile = 5 * 1024 * 1024
 augroup LargeFile
   au!
   autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
@@ -510,3 +439,29 @@ nmap <silent><S-Tab> :lua require("harpoon.ui").nav_prev()<cr>
 nmap <silent>1 :lua require("harpoon.ui").nav_file(1)<cr>
 nmap <silent>2 :lua require("harpoon.ui").nav_file(2)<cr>
 nmap <silent>3 :lua require("harpoon.ui").nav_file(3)<cr>
+
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "c", "lua", "vim", "help", "query", "ruby", "bash", "json", "yaml", "html", "css", "javascript", },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  highlight = {
+    enable = true,
+    disable = {},
+    disable = function(lang, buf)
+        local max_filesize = 1 * 1024 -- 1 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF

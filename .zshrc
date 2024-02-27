@@ -123,7 +123,7 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$HOME/.flutter/flutter/bin:$PATH"
 
 alias mvim="/Applications/MacVim.app/Contents/MacOS/Vim -g"
-alias nvim="~/nvim-osx64/bin/nvim"
+# alias nvim="~/nvim-osx64/bin/nvim"
 alias ctags="/usr/local/Cellar/ctags/5.8_2/bin/ctags"
 alias solargraph="/Users/ai/.rbenv/versions/3.1.0/bin/solargraph"
 
