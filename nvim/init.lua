@@ -12,6 +12,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  'LunarVim/bigfile.nvim',
+  'brenoprata10/nvim-highlight-colors',
   "williamboman/mason.nvim",
   "folke/which-key.nvim",
   { "folke/neoconf.nvim", cmd = "Neoconf" },
@@ -28,10 +30,12 @@ require("lazy").setup({
     ft = { "markdown" },
   },
   'ekalinin/Dockerfile.vim',
+  'github/copilot.vim',
   'suketa/nvim-dap-ruby',
   'nvim-lua/plenary.nvim',
   'mfussenegger/nvim-dap',
   'nvim-treesitter/nvim-treesitter',
+  'windwp/nvim-ts-autotag',
   'tree-sitter/tree-sitter-typescript',
   'tree-sitter/tree-sitter-ruby',
   'antoinemadec/FixCursorHold.nvim',
@@ -41,8 +45,8 @@ require("lazy").setup({
   'kamykn/spelunker.vim',
   'airblade/vim-gitgutter',
   'skywind3000/vim-preview',
-  'alvan/vim-closetag',
-  'adelarsq/vim-matchit',
+  -- 'alvan/vim-closetag',
+  -- 'adelarsq/vim-matchit',
   'haya14busa/incsearch.vim',
   'fatih/vim-go',
   'yuki-yano/fzf-preview.vim',
@@ -53,9 +57,17 @@ require("lazy").setup({
   'scrooloose/vim-slumlord',
   'weirongxu/plantuml-previewer.vim',
   'tpope/vim-rails',
-  'tpope/vim-bundler',
   'tpope/vim-endwise',
-  'tpope/vim-unimpaired',
+  'sheerun/vim-polyglot',
+  'vim-ruby/vim-ruby',
+  'tpope/vim-ragtag',
+  'tpope/vim-bundler',
+  -- 'tpope/vim-unimpaired',
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = true
+  },
   'tpope/vim-dispatch',
   'Raimondi/delimitMate',
   'tpope/vim-fugitive',
@@ -70,7 +82,6 @@ require("lazy").setup({
   'rcarriga/nvim-dap-ui',
   'nvim-telescope/telescope.nvim',
   'aklt/plantuml-syntax',
-  'codota/tabnine-nvim', build = "./dl_binaries.sh",
   'hrsh7th/nvim-cmp',
   'hrsh7th/cmp-nvim-lsp',
   'hrsh7th/cmp-buffer',
@@ -79,16 +90,25 @@ require("lazy").setup({
   'hrsh7th/cmp-vsnip',
   'hrsh7th/vim-vsnip',
   {
-     'tzachar/cmp-tabnine',
-     build = './install.sh',
-     dependencies = 'hrsh7th/nvim-cmp',
- },
- "onsails/lspkind.nvim",
- "jose-elias-alvarez/null-ls.nvim"
-
+    'tzachar/cmp-tabnine',
+    build = './install.sh',
+    dependencies = 'hrsh7th/nvim-cmp',
+  },
+  "onsails/lspkind.nvim",
+  "jose-elias-alvarez/null-ls.nvim"
+})
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on(
+'confirm_done',
+cmp_autopairs.on_confirm_done()
+)
+require('nvim-ts-autotag').setup({
+  filetypes = { "erb", "html" , "xml" },
 })
 
 
+-- require('nvim-highlight-colors').setup {}
 local cmp = require'cmp'
 cmp.setup({
   snippet = {
@@ -108,11 +128,15 @@ cmp.setup({
     }
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-c>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<C-y>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    -- ['<C-u>'] = cmp.mapping.scroll_docs(4),
+    ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+    ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -158,62 +182,60 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspkind = require('lspkind')
 
 local source_mapping = {
-	buffer = "[Buffer]",
-	nvim_lsp = "[LSP]",
-	nvim_lua = "[Lua]",
-	cmp_tabnine = "[TN]",
-	path = "[Path]",
+  buffer = "[Buffer]",
+  nvim_lsp = "[LSP]",
+  nvim_lua = "[Lua]",
+  path = "[Path]",
 }
 
 require'cmp'.setup {
-	sources = {
+  sources = {
     { name = 'nvim_lsp' }, 
     { name = 'solargraph' },
+    { name = 'vim-dadbod-completion' },
+    { name = 'buffer' },
+    { name = 'path' },
+    { name = 'tsserver' },
     { name = 'pylsp'},
-		{ name = 'cmp_tabnine' },
-	},
-	formatting = {
-		format = function(entry, vim_item)
-			-- if you have lspkind installed, you can use it like
-			-- in the following line:
-	 		vim_item.kind = lspkind.symbolic(vim_item.kind, {mode = "symbol"})
-	 		vim_item.menu = source_mapping[entry.source.name]
-	 		if entry.source.name == "cmp_tabnine" then
-                local detail = (entry.completion_item.labelDetails or {}).detail
-	 			vim_item.kind = ""
-	 			if detail and detail:find('.*%%.*') then
-	 				vim_item.kind = vim_item.kind .. ' ' .. detail
-	 			end
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      -- if you have lspkind installed, you can use it like
+      -- in the following line:
+      vim_item.kind = lspkind.symbolic(vim_item.kind, {mode = "symbol"})
+      vim_item.menu = source_mapping[entry.source.name]
+      if entry.source.name == "cmp_tabnine" then
+        local detail = (entry.completion_item.labelDetails or {}).detail
+        vim_item.kind = ""
+        if detail and detail:find('.*%%.*') then
+          vim_item.kind = vim_item.kind .. ' ' .. detail
+        end
 
-	 			if (entry.completion_item.data or {}).multiline then
-	 				vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
-	 			end
-	 		end
-	 		local maxwidth = 80
-	 		vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
-	 		return vim_item
-	  end,
-	},
+        if (entry.completion_item.data or {}).multiline then
+          vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
+        end
+      end
+      local maxwidth = 80
+      vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
+      return vim_item
+    end,
+  },
 }
 
-require("mason").setup()
-require('tabnine').setup({
-  disable_auto_comment=true,
-  accept_keymap="<CR>",
-  dismiss_keymap = "<C-]>",
-  debounce_ms = 800,
-  -- suggestion_color = {gui = "#808080", cterm = 244},
-  exclude_filetypes = {"TelescopePrompt", "NvimTree"},
-  log_file_path = nil, -- absolute path to Tabnine log file
-})
 
 local lspconfig = require'lspconfig'
 
 lspconfig.solargraph.setup{}
-lspconfig.pylsp.setup{}
-lspconfig.tsserver.setup {
-  capabilities = capabilities
+lspconfig.yamlls.setup{
+  yaml = {
+    schemas = {
+      kubernetes = "/*.yaml",
+    }
+  }
 }
+lspconfig.pyright.setup{}
+lspconfig.pylsp.setup{}
+lspconfig.tsserver.setup{}
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
@@ -225,6 +247,7 @@ vim.opt.scrolloff = 9
 vim.opt.errorbells = false
 vim.opt.visualbell = false
 vim.opt.virtualedit = 'onemore'
+vim.opt.cursorline = on
 
 vim.opt.number = true
 vim.opt.clipboard:append("unnamedplus")
@@ -287,10 +310,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.cmd[[
-  " Define an autocmd for BufRead event
-  augroup DisableSyntaxHighlighting
-    autocmd!
-    autocmd BufRead * if (line2byte(line("$")+1) > 10240) | syntax off | endif
-  augroup END
-]]
+-- Define a key mapping to trigger formatting using LSP
+vim.api.nvim_set_keymap('n', '<Leader>af', '<Cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+require("mason").setup()
+
+vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb'
+
+vim.api.nvim_set_keymap('i', '<C-j>', '<Plug>(copilot-next)', { silent = true })
+vim.api.nvim_set_keymap('i', '<C-k>', '<Plug>(copilot-previous)', { silent = true })
+vim.api.nvim_set_keymap('i', '<C-\\>', '<Plug>(copilot-dismiss)', { silent = true })
+vim.api.nvim_set_keymap('i', '<C-m>', '<Plug>(copilot-select)', { silent = true })
+vim.api.nvim_set_keymap('i', '<C-e>', '<Plug>(copilot-cancel)', { silent = true })
