@@ -12,8 +12,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  -- 'phha/zenburn.nvim',
+  'ap/vim-css-color',
   'LunarVim/bigfile.nvim',
-  'brenoprata10/nvim-highlight-colors',
+  -- 'brenoprata10/nvim-highlight-colors',
   "williamboman/mason.nvim",
   "folke/which-key.nvim",
   { "folke/neoconf.nvim", cmd = "Neoconf" },
@@ -29,24 +31,31 @@ require("lazy").setup({
     end,
     ft = { "markdown" },
   },
-  'ekalinin/Dockerfile.vim',
+  -- 'ekalinin/Dockerfile.vim',
   'github/copilot.vim',
   'suketa/nvim-dap-ruby',
+  'mfussenegger/nvim-dap-python',
+  { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
   'nvim-lua/plenary.nvim',
   'mfussenegger/nvim-dap',
+
   'nvim-treesitter/nvim-treesitter',
-  'windwp/nvim-ts-autotag',
+  -- 'windwp/nvim-ts-autotag',
   'tree-sitter/tree-sitter-typescript',
   'tree-sitter/tree-sitter-ruby',
+  'tree-sitter/tree-sitter-python',
+
   'antoinemadec/FixCursorHold.nvim',
+
   'nvim-neotest/neotest',
   'nvim-neotest/neotest-vim-test',
   'olimorris/neotest-rspec',
+
   'kamykn/spelunker.vim',
+
   'airblade/vim-gitgutter',
   'skywind3000/vim-preview',
-  -- 'alvan/vim-closetag',
-  -- 'adelarsq/vim-matchit',
+  'alvan/vim-closetag',
   'haya14busa/incsearch.vim',
   'fatih/vim-go',
   'yuki-yano/fzf-preview.vim',
@@ -56,20 +65,18 @@ require("lazy").setup({
   'rking/ag.vim',
   'scrooloose/vim-slumlord',
   'weirongxu/plantuml-previewer.vim',
-  'tpope/vim-rails',
-  'tpope/vim-endwise',
   'sheerun/vim-polyglot',
   'vim-ruby/vim-ruby',
+  -- 'adelarsq/vim-matchit',
+  -- 'LunarWatcher/auto-pairs',
+  -- 'Raimondi/delimitMate',
+  'tpope/vim-repeat',
+  'tpope/vim-rails',
+  'tpope/vim-endwise',
   'tpope/vim-ragtag',
   'tpope/vim-bundler',
-  -- 'tpope/vim-unimpaired',
-  {
-    'windwp/nvim-autopairs',
-    event = "InsertEnter",
-    config = true
-  },
+  'tpope/vim-unimpaired',
   'tpope/vim-dispatch',
-  'Raimondi/delimitMate',
   'tpope/vim-fugitive',
   'tpope/vim-surround',
   'tpope/vim-repeat',
@@ -89,22 +96,13 @@ require("lazy").setup({
   'hrsh7th/cmp-cmdline',
   'hrsh7th/cmp-vsnip',
   'hrsh7th/vim-vsnip',
-  {
-    'tzachar/cmp-tabnine',
-    build = './install.sh',
-    dependencies = 'hrsh7th/nvim-cmp',
-  },
+  -- {
+  --   'tzachar/cmp-tabnine',
+  --   build = './install.sh',
+  --   dependencies = 'hrsh7th/nvim-cmp',
+  -- },
   "onsails/lspkind.nvim",
   "jose-elias-alvarez/null-ls.nvim"
-})
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-local cmp = require('cmp')
-cmp.event:on(
-'confirm_done',
-cmp_autopairs.on_confirm_done()
-)
-require('nvim-ts-autotag').setup({
-  filetypes = { "erb", "html" , "xml" },
 })
 
 
@@ -128,15 +126,15 @@ cmp.setup({
     }
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-c>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-y>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<C-m>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-    -- ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    -- ['<C-u>'] = cmp.mapping.scroll_docs(4),
     ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     ['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -233,9 +231,23 @@ lspconfig.yamlls.setup{
     }
   }
 }
-lspconfig.pyright.setup{}
 lspconfig.pylsp.setup{}
 lspconfig.tsserver.setup{}
+lspconfig.stimulus_ls.setup{}
+lspconfig.stylelint_lsp.setup{}
+lspconfig.ruby_ls.setup{}
+lspconfig.tailwindcss.setup{}
+lspconfig.terraformls.setup{}
+lspconfig.html.setup{}
+lspconfig.jsonls.setup{}
+-- lspconfig.bashls.setup{}
+lspconfig.dockerls.setup{}
+-- lspconfig.svelte.setup{}
+-- lspconfig.graphql.setup{}
+-- lspconfig.vuels.setup{}
+-- lspconfig.gopls.setup{}
+-- lspconfig.hls.setup{}
+
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
@@ -248,6 +260,7 @@ vim.opt.errorbells = false
 vim.opt.visualbell = false
 vim.opt.virtualedit = 'onemore'
 vim.opt.cursorline = on
+vim.opt.wrap = false
 
 vim.opt.number = true
 vim.opt.clipboard:append("unnamedplus")
@@ -310,14 +323,43 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
--- Define a key mapping to trigger formatting using LSP
 vim.api.nvim_set_keymap('n', '<Leader>af', '<Cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
-require("mason").setup()
 
-vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb'
+require("mason").setup()
+require("mason-lspconfig").setup {
+    ensure_installed = { "lua_ls", "rust_analyzer", "solargraph", "tsserver", "pylsp"},
+    automatic_installation = true,
+}
+
+vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx'
+vim.g.closetag_xhtml_filenames = '*.xhtml,*.jsx,*.erb'
+vim.g.closetag_emptyTags_caseSensitive = 1
+vim.g.closetag_shortcut = '>'
+vim.g.closetag_close_shortcut = '<leader>>'
+
+vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', {
+    expr = true,
+    replace_keycodes = false
+  })
+vim.g.copilot_no_tab_map = true
 
 vim.api.nvim_set_keymap('i', '<C-j>', '<Plug>(copilot-next)', { silent = true })
 vim.api.nvim_set_keymap('i', '<C-k>', '<Plug>(copilot-previous)', { silent = true })
 vim.api.nvim_set_keymap('i', '<C-\\>', '<Plug>(copilot-dismiss)', { silent = true })
 vim.api.nvim_set_keymap('i', '<C-m>', '<Plug>(copilot-select)', { silent = true })
 vim.api.nvim_set_keymap('i', '<C-e>', '<Plug>(copilot-cancel)', { silent = true })
+vim.api.nvim_set_keymap('i', '<C-s>', '<Plug>(copilot-suggest)', { silent = true })
+-- require('zenburn').setup()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = 'zenburn',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'CopilotSuggestion', {
+        ctermfg = 8,
+        force = true
+      })
+  end
+})
+-- require('nvim-ts-autotag').setup {
+--   enable = true,
+--   filetypes = { 'html', 'xml', 'javascript', 'typescript', 'typescriptreact', 'javascriptreact', 'vue', 'erb', 'eruby', 'jsx', 'tsx' }
+-- }
