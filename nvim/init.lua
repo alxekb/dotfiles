@@ -1,21 +1,69 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  -- 'phha/zenburn.nvim',
+  {
+	"yetone/avante.nvim",
+	event = "VeryLazy",
+	version = false,
+	opts = {
+	provider = "claude"
+	-- openai = {
+	--   model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
+	--   endpoint = "https://api.openai.com/v1",
+	--   timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+	--   temperature = 0,
+	--   max_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+	-- },
+	},
+	build = "make",
+	dependencies = {
+
+	"nvim-treesitter/nvim-treesitter",
+	"stevearc/dressing.nvim",
+	"nvim-lua/plenary.nvim",
+	"MunifTanjim/nui.nvim",
+	"echasnovski/mini.pick", -- for file_selector provider mini.pick
+	"ibhagwan/fzf-lua", -- for file_selector provider fzf
+	"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+	{
+	  "HakonHarnes/img-clip.nvim",
+	  event = "VeryLazy",
+	  opts = {
+	    default = {
+	      embed_image_as_base64 = false,
+	      prompt_for_file_name = false,
+	      drag_and_drop = {
+		insert_mode = true,
+	      },
+	    },
+	  },
+	},
+	{
+	  'MeanderingProgrammer/render-markdown.nvim',
+	  opts = {
+	    file_types = { "markdown", "Avante" },
+	  },
+	  ft = { "markdown", "Avante" },
+	},
+    },
+  },
   'ap/vim-css-color',
   'LunarVim/bigfile.nvim',
-  -- 'brenoprata10/nvim-highlight-colors',
+  'RRethy/base16-nvim',
   "williamboman/mason.nvim",
   "folke/which-key.nvim",
   { "folke/neoconf.nvim", cmd = "Neoconf" },
@@ -31,8 +79,6 @@ require("lazy").setup({
     end,
     ft = { "markdown" },
   },
-  -- 'ekalinin/Dockerfile.vim',
-  'github/copilot.vim',
   'suketa/nvim-dap-ruby',
   'mfussenegger/nvim-dap-python',
   { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
@@ -40,7 +86,6 @@ require("lazy").setup({
   'mfussenegger/nvim-dap',
 
   'nvim-treesitter/nvim-treesitter',
-  -- 'windwp/nvim-ts-autotag',
   'tree-sitter/tree-sitter-typescript',
   'tree-sitter/tree-sitter-ruby',
   'tree-sitter/tree-sitter-python',
@@ -49,7 +94,8 @@ require("lazy").setup({
 
   'nvim-neotest/neotest',
   'nvim-neotest/neotest-vim-test',
-  'olimorris/neotest-rspec',
+  -- 'olimorris/neotest-rspec',
+  'vim-test/vim-test',
 
   'kamykn/spelunker.vim',
 
@@ -67,9 +113,6 @@ require("lazy").setup({
   'weirongxu/plantuml-previewer.vim',
   'sheerun/vim-polyglot',
   'vim-ruby/vim-ruby',
-  -- 'adelarsq/vim-matchit',
-  -- 'LunarWatcher/auto-pairs',
-  -- 'Raimondi/delimitMate',
   'tpope/vim-repeat',
   'tpope/vim-rails',
   'tpope/vim-endwise',
@@ -96,11 +139,6 @@ require("lazy").setup({
   'hrsh7th/cmp-cmdline',
   'hrsh7th/cmp-vsnip',
   'hrsh7th/vim-vsnip',
-  -- {
-  --   'tzachar/cmp-tabnine',
-  --   build = './install.sh',
-  --   dependencies = 'hrsh7th/nvim-cmp',
-  -- },
   "onsails/lspkind.nvim",
   "jose-elias-alvarez/null-ls.nvim"
 })
@@ -127,7 +165,6 @@ cmp.setup({
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<C-m>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
     ['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
@@ -188,7 +225,7 @@ local source_mapping = {
 
 require'cmp'.setup {
   sources = {
-    { name = 'nvim_lsp' }, 
+    { name = 'nvim_lsp' },
     { name = 'solargraph' },
     { name = 'vim-dadbod-completion' },
     { name = 'buffer' },
@@ -231,17 +268,16 @@ lspconfig.yamlls.setup{
     }
   }
 }
-lspconfig.pylsp.setup{}
-lspconfig.tsserver.setup{}
-lspconfig.stimulus_ls.setup{}
-lspconfig.stylelint_lsp.setup{}
-lspconfig.ruby_ls.setup{}
-lspconfig.tailwindcss.setup{}
-lspconfig.terraformls.setup{}
-lspconfig.html.setup{}
-lspconfig.jsonls.setup{}
+-- lspconfig.pylsp.setup{}
+-- lspconfig.tsserver.setup{}
+-- lspconfig.stimulus_ls.setup{}
+-- lspconfig.stylelint_lsp.setup{}
+-- lspconfig.tailwindcss.setup{}
+-- lspconfig.terraformls.setup{}
+-- lspconfig.html.setup{}
+-- lspconfig.jsonls.setup{}
 -- lspconfig.bashls.setup{}
-lspconfig.dockerls.setup{}
+-- lspconfig.dockerls.setup{}
 -- lspconfig.svelte.setup{}
 -- lspconfig.graphql.setup{}
 -- lspconfig.vuels.setup{}
@@ -291,7 +327,7 @@ vim.api.nvim_set_keymap('n', '<leader>3', '<esc>:RG<cr>', { silent = true })
 vim.api.nvim_set_keymap('n', '<leader>4', '<esc>:Buffers<cr>', { silent = true })
 vim.api.nvim_set_keymap('n', '<leader>5', '<esc>:Commits<cr>', { silent = true })
 vim.api.nvim_set_keymap('n', '<leader>d', ':DashWord<cr>', { silent = true })
-vim.api.nvim_set_keymap('n', '<leader>af', ':ALEFix<cr>', { silent = true })
+-- vim.api.nvim_set_keymap('n', '<leader>ff', ':ALEFix<cr>', { silent = true })
 vim.api.nvim_set_keymap('n', '<leader>n', ':ALENext<cr>', { silent = true })
 vim.api.nvim_set_keymap('n', '<leader><space>', ':tabnew<cr>', { silent = true })
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -323,43 +359,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.api.nvim_set_keymap('n', '<Leader>af', '<Cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>ff', '<Cmd>lua vim.lsp.buf.format()<CR>', { noremap = true, silent = true })
 
 require("mason").setup()
 require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls", "rust_analyzer", "solargraph", "tsserver", "pylsp"},
+    ensure_installed = { "solargraph"},
     automatic_installation = true,
 }
-
 vim.g.closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb,*.jsx'
 vim.g.closetag_xhtml_filenames = '*.xhtml,*.jsx,*.erb'
 vim.g.closetag_emptyTags_caseSensitive = 1
 vim.g.closetag_shortcut = '>'
 vim.g.closetag_close_shortcut = '<leader>>'
 
-vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', {
-    expr = true,
-    replace_keycodes = false
-  })
-vim.g.copilot_no_tab_map = true
-
-vim.api.nvim_set_keymap('i', '<C-j>', '<Plug>(copilot-next)', { silent = true })
-vim.api.nvim_set_keymap('i', '<C-k>', '<Plug>(copilot-previous)', { silent = true })
-vim.api.nvim_set_keymap('i', '<C-\\>', '<Plug>(copilot-dismiss)', { silent = true })
-vim.api.nvim_set_keymap('i', '<C-m>', '<Plug>(copilot-select)', { silent = true })
-vim.api.nvim_set_keymap('i', '<C-e>', '<Plug>(copilot-cancel)', { silent = true })
-vim.api.nvim_set_keymap('i', '<C-s>', '<Plug>(copilot-suggest)', { silent = true })
--- require('zenburn').setup()
-vim.api.nvim_create_autocmd('ColorScheme', {
-  pattern = 'zenburn',
-  callback = function()
-    vim.api.nvim_set_hl(0, 'CopilotSuggestion', {
-        ctermfg = 8,
-        force = true
-      })
-  end
-})
--- require('nvim-ts-autotag').setup {
---   enable = true,
---   filetypes = { 'html', 'xml', 'javascript', 'typescript', 'typescriptreact', 'javascriptreact', 'vue', 'erb', 'eruby', 'jsx', 'tsx' }
--- }
