@@ -301,7 +301,21 @@ vim.opt.wrap = false
 vim.opt.number = true
 vim.opt.clipboard:append("unnamedplus")
 
-vim.api.nvim_set_keymap('n', '<leader>e', ':Vexplore<CR>:let @/ = expand("%:t")<CR>/', {noremap = true, silent = true})
+local function open_sidebar_and_find()
+  local current_file = vim.fn.expand("%:t")
+  if current_file == "" then
+    vim.cmd('Sex!')
+    return
+  end
+  
+  vim.cmd('Sex!')
+  vim.defer_fn(function()
+    vim.fn.setreg('/', current_file)
+    vim.fn.search(current_file)
+  end, 150)
+end
+
+vim.keymap.set('n', '<leader>e', open_sidebar_and_find, {noremap = true, silent = true})
 local width_percentage = math.floor(vim.o.columns * 0.3)
 vim.g.netrw_winsize = width_percentage
 vim.g.netrw_banner = 0
